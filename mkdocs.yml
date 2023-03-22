@@ -1,0 +1,40 @@
+site_name: Kivy Widgets
+repo_url: https://github.com/kivy-school/kivy-widgets
+repo_name: Kivy School - Kivy Widgets
+edit_uri: tree/main/docs
+
+theme: 
+  name: material
+  palette: 
+    - scheme: default
+      primary: blue
+      toggle:
+        icon: material/weather-night
+        name: dark mode
+    - scheme: slate
+      primary: dark-blue
+      toggle:
+        icon: material/weather-sunny
+        name: light mode
+  features:
+    - search.suggest
+    - search.highlight
+
+markdown_extensions:
+  - attr_list
+  - pymdownx.tasklist
+  - pymdownx.emoji:
+      emoji_index: !!python/name:materialx.emoji.twemoji
+      emoji_generator: !!python/name:materialx.emoji.to_svg
+  - pymdownx.mark
+  - pymdownx.tilde
+  - pymdownx.highlight
+  - pymdownx.superfences
+  - pymdownx.tabbed:
+      alternate_style: true 
+  - pymdownx.arithmatex:
+      generic: true
+  - toc:
+        permalink: "¶"
+  - admonition
+  - pymdownx.details
