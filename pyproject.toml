@@ -2,7 +2,7 @@
 name = "kivy-widgets"
 version = "0.1.0"
 description = ""
-authors = ["filipemarch <filipe.marchesini@gmail.com>"]
+authors = ["filipemarch <filipe.marchesini@gmail.com>", "ShootingStarDragon <rppapamaths@gmail.com>"]
 readme = "README.md"
 packages = [{include = "kivy_widgets"}]
 
@@ -20,6 +20,7 @@ pytest-cov = "^4.0.0"
 black = "^23.1.0"
 isort = "^5.12.0"
 taskipy = "^1.10.3"
+icecream = "^2.1.3"
 
 
 [tool.poetry.group.doc.dependencies]
@@ -41,5 +42,6 @@ line_length = 79
 lint = "isort . && black ."
 docs = "mkdocs serve"
 pre_test = "task lint"
-test = "pytest -s -x --cov=kivy_widgets -vv"
+test = "pytest -s -x --cov=kivy_widgets -vv tests/"
+testgl = "env KIVY_UNITTEST_SCREENSHOTS=1 pytest -s -x --cov=kivy_widgets -vv tests/"
 post_test = "coverage html"
