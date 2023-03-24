@@ -8,7 +8,7 @@ packages = [{include = "kivy_widgets"}]
 
 [tool.poetry.dependencies]
 python = "^3.10"
-kivy = {url = "https://github.com/kivy/Kivy/archive/master.zip"}
+kivy = "^2.1.0"
 
 
 [tool.poetry.group.test.dependencies]
