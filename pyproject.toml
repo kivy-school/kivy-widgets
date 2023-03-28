@@ -7,7 +7,7 @@ readme = "README.md"
 packages = [{include = "kivy_widgets"}]
 
 [tool.poetry.dependencies]
-python = "^3.10"
+python = "^3.8"
 kivy = "^2.1.0"
 
 
