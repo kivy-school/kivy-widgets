@@ -1,3 +1,6 @@
+from kivy.clock import Clock
+from kivy.core.clipboard import Clipboard
+from kivy.core.window import Window
 from kivy.lang import Builder
 from kivy.metrics import dp, sp
 from kivy.properties import (
@@ -9,11 +12,8 @@ from kivy.properties import (
 )
 from kivy.uix.behaviors import ButtonBehavior
 from kivy.uix.boxlayout import BoxLayout
-from kivy.uix.relativelayout import RelativeLayout
 from kivy.uix.label import Label
-from kivy.core.clipboard import Clipboard
-from kivy.core.window import Window
-from kivy.clock import Clock
+from kivy.uix.relativelayout import RelativeLayout
 
 from .icon_definitions import icon_unicodes
 
