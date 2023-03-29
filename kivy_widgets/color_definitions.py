@@ -289,5 +289,8 @@ Builder.load_string("""
 #:set rose_900 rgba("#881337")
 
 #:set rose rose_500
+
+#:set white rgba("#ffffff")
+#:set black rgba("#000000")
 """)
 # fmt: on
