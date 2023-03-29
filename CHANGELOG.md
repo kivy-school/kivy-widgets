@@ -2,12 +2,10 @@ Version: 0.1.4
 ==============
 
 * [#6](https://github.com/kivy-school/kivy-widgets/pull/7): "✨ feat: Create Icon and IconViewer + icon_definitions"
+* ✨ feat: Created Created icon_definitions.py
+* ✨ feat: Created icons.py
 
-✨ feat: Created Created icon_definitions.py
-✨ feat: Created icons.py
-
-IconViewer implements hover functionality (tooltip) over all icons
-You can copy any icon name by clicking on its `IconViewerItem`
+IconViewer implements hover functionality (tooltip) over all icons. You can copy any icon name by clicking on its `IconViewerItem`
 
 Version: 0.1.3
 ==============
