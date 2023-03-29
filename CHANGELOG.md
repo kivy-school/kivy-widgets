@@ -1,3 +1,9 @@
+Version: 0.1.5
+==============
+
+* 🐛 fix: Fixed `font_name` from `Icon` class.
+
+
 Version: 0.1.4
 ==============
 
