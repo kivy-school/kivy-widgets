@@ -1,8 +1,10 @@
+import os
+
 from kivy.clock import Clock
 from kivy.core.clipboard import Clipboard
 from kivy.core.window import Window
-from kivy.lang import Builder
-from kivy.metrics import dp, sp
+from kivy.lang import Builder, global_idmap
+from kivy.metrics import dp
 from kivy.properties import (
     ColorProperty,
     ListProperty,
@@ -17,10 +19,17 @@ from kivy.uix.relativelayout import RelativeLayout
 
 from .icon_definitions import icon_unicodes
 
+__file__ = os.path.abspath(__file__)
+font_path = os.path.join(
+    os.path.dirname(__file__), "fonts", "materialdesignicons-webfont.ttf"
+)
+
+global_idmap["unicode"] = icon_unicodes
+
 
 class Icon(Label):
     icon = StringProperty("android")
-    font_name = StringProperty("kivy_widgets/fonts/materialdesignicons-webfont.ttf")
+    font_name = StringProperty(font_path)
     icon_color = ColorProperty([0, 0, 0, 0.1])
     icon_size = NumericProperty(dp(21))
     background_color = ColorProperty([0, 0, 0, 0])
@@ -99,8 +108,6 @@ class IconViewerItem(ButtonBehavior, BoxLayout):
 
 # fmt: off
 Builder.load_string("""
-#:import unicode kivy_widgets.icon_definitions.icon_unicodes
-
 <Icon>:
     text: u"{}".format(unicode[root.icon]) if root.icon in unicode else "blank"
     size_hint: (None, None) if root.mode == "default" else (1, 1)
