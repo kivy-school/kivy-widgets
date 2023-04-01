@@ -25,6 +25,7 @@ font_path = os.path.join(
 )
 
 global_idmap["unicode"] = icon_unicodes
+global_idmap["icon_font"] = font_path
 
 
 class Icon(Label):
@@ -32,7 +33,7 @@ class Icon(Label):
     font_name = StringProperty(font_path)
     icon_color = ColorProperty([0, 0, 0, 0.1])
     icon_size = NumericProperty(dp(21))
-    background_color = ColorProperty([0, 0, 0, 0])
+    bg_color = ColorProperty([0, 0, 0, 0])
     mode = OptionProperty(
         "default", options=["default", "stretch-background", "stretch-icon"]
     )
@@ -66,7 +67,7 @@ class IconViewer(RelativeLayout):
 
 
 class IconViewerItem(ButtonBehavior, BoxLayout):
-    background_color = ListProperty([0, 0, 0, 0.2])
+    bg_color = ListProperty([0, 0, 0, 0.2])
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -79,7 +80,7 @@ class IconViewerItem(ButtonBehavior, BoxLayout):
         and tipbox position/opacity.
         """
         if self.collide_point(*self.to_widget(*pos)):
-            self.background_color = [0, 0, 0, 0.4]
+            self.bg_color = [0, 0, 0, 0.4]
 
             self.viewer.tipbox.pos = (
                 self.to_window(*self.pos)[0] - self.width / 2,
@@ -94,7 +95,7 @@ class IconViewerItem(ButtonBehavior, BoxLayout):
 
             self.viewer.selected_icon = self.icon
         else:
-            self.background_color = [0, 0, 0, 0.2]
+            self.bg_color = [0, 0, 0, 0.2]
             self.viewer.tipbox.opacity = 0
 
     def on_release(self):
@@ -118,7 +119,7 @@ Builder.load_string("""
     
     canvas.before:
         Color:
-            rgba: root.background_color or (0, 0, 0, 0)
+            rgba: root.bg_color or (0, 0, 0, 0)
         Rectangle:
             pos: self.pos
             size: self.size
@@ -208,7 +209,7 @@ Builder.load_string("""
 
     canvas.after:
         Color:
-            rgba: root.background_color
+            rgba: root.bg_color
         Rectangle:
             pos: self.pos
             size: self.size
@@ -217,7 +218,7 @@ Builder.load_string("""
         mode: "stretch-icon"
         icon: root.icon
         icon_color: rgba("#5F6368")
-        background_color: slate_200
+        bg_color: slate_200
     Label:
         text: root.icon
         font_size: dp(16)
