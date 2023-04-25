@@ -25,8 +25,8 @@ class CButton(ButtonBehavior, BoxLayout):
     icon_color = ColorProperty([0, 0, 0, 1])
     radius = ListProperty([dp(5)])
     icon_size = NumericProperty(dp(24))
-    icon_position = OptionProperty("left", options=["left", "right"])
-    text_pos = OptionProperty("left", options=["left", "center"])
+    # icon_position = OptionProperty("left", options=["left", "right"])
+    # text_pos = OptionProperty("left", options=["left", "center"])
 
     def get_current_color(self):
         if self.state == "normal":
@@ -72,7 +72,7 @@ Builder.load_string("""
         icon: root.icon
         font_name: icon_font
         size_hint: (None, None)
-        size: self.texture_size
+        size: self.texture_size if self.icon else (dp(0), dp(0))
         font_size: root.icon_size # this is the icon size
         pos_hint: {"center_x": .5, "center_y": .5}
         color: root.icon_color
