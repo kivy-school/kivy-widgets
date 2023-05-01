@@ -1,3 +1,7 @@
+# Version: 0.1.7
+
+- 🐛 fix: Removed padding and spacing from `CButton` (replaced by dummy widgets).
+
 # Version: 0.1.6
 
 - 🐛 fix: Created `CButton` (Custom Button) widget.
