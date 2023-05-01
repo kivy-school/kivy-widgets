@@ -5,11 +5,12 @@ from kivy.properties import (
     ListProperty,
     NumericProperty,
     StringProperty,
-    OptionProperty,
     AliasProperty,
 )
 from kivy.uix.behaviors import ButtonBehavior
 from kivy.uix.boxlayout import BoxLayout
+from kivy.uix.widget import Widget
+from kivy.uix.label import Label
 
 
 class CButton(ButtonBehavior, BoxLayout):
@@ -17,7 +18,7 @@ class CButton(ButtonBehavior, BoxLayout):
     Custom button with icon and text
     """
 
-    text = StringProperty("Button")
+    text = StringProperty()
     font_size = NumericProperty(sp(18))
     icon = StringProperty()
     bg_color = ColorProperty([1, 1, 1, 1])
@@ -41,8 +42,41 @@ class CButton(ButtonBehavior, BoxLayout):
 
     current_color = AliasProperty(
         get_current_color,
-        bind=["state"],
+        bind=["state", "bg_color"],
     )
+
+    def get_current_mode(self):
+        if self.text and self.icon:
+            return "both"
+        elif self.text:
+            return "text"
+        elif self.icon:
+            return "icon"
+
+    current_mode = AliasProperty(
+        get_current_mode,
+        bind=["text", "icon"],
+    )
+
+    def on_current_mode(self, *args):
+        if len(self.children) > 2:
+            children_to_remove = [
+                child for child in self.children if not isinstance(child, Label)
+            ]
+            for child in children_to_remove:
+                self.remove_widget(child)
+
+        if self.current_mode in ["icon", "text"]:
+            self.add_widget(Widget(), index=2)
+            self.add_widget(Widget(), index=0)
+        else:
+            self.add_widget(Widget(), index=0)
+            self.add_widget(Widget(), index=2)
+            self.add_widget(Widget(), index=4)
+
+    def on_kv_post(self, *args):
+        if not self.text and not self.icon:
+            self.text = "Button"
 
 
 # fmt: off
@@ -50,13 +84,10 @@ Builder.load_string("""
 <-CButton>:
     size_hint: None, None
     _width: None
-    width: (label.texture_size[0] + icon.size[0] + dp(30) if icon.size[0] < dp(50) and icon.icon and label.text else label.texture_size[0] + icon.size[0]+ dp(20)) if not self._width else self._width
+    width: (label.texture_size[0] + icon.size[0] + dp(35) if icon.size[0] < dp(50) and icon.icon and label.text else label.texture_size[0] + icon.size[0]+ dp(20)) if not self._width else self._width
 
     _height: None
     height: (dp(50) if icon.size[1] < dp(50) else icon.size[1]) if not self._height else self._height
-
-    padding: dp(10)
-    spacing: dp(10) if icon.icon and label.text else 0
 
     canvas.before:
         Color:
@@ -65,7 +96,7 @@ Builder.load_string("""
             size: self.size
             pos: self.pos
             radius: root.radius
-        
+
     Label:
         id: icon
         text: u"{}".format(unicode[root.icon]) if root.icon in unicode else "blank"
