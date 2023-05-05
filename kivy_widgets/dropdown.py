@@ -236,7 +236,7 @@ class CDropDown(ButtonBehavior, BoxLayout):
             cls = Factory.get(cls)
 
         if not self.container_width:
-            self._dropdown = cls(auto_width=False)
+            self._dropdown = cls(auto_width=True)
         else:
             self._dropdown = cls()
         self._dropdown.bind(on_select=self._on_dropdown_select)
