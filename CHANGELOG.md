@@ -1,3 +1,7 @@
+# Version: 0.1.13
+
+- ✨ feat: Added `reset_text` behaviour to `CDropDown`
+
 # Version: 0.1.12
 
 - ✨ feat: Added `border_color` and `border_width` to `Container`
