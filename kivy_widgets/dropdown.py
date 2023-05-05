@@ -1,4 +1,5 @@
 from kivy.animation import Animation
+from kivy.clock import Clock
 from kivy.factory import Factory
 from kivy.lang import Builder, global_idmap
 from kivy.metrics import dp
@@ -75,9 +76,10 @@ Builder.load_string("""
 
 class Container(DropDown):
     container_position = OptionProperty(
-        "auto", options=["auto", "left-top", "top", "right-top", "left", "center", "right", "left-bottom", "bottom", "right-bottom"]
+        "auto", options=["auto", "left-top", "top", "right-top", "left", "center", "right", "left-bottom", "bottom", "right-bottom", "left-aligned", "right-aligned"]
     )
     bg_color = ColorProperty([1,1,1,1])
+    initial_width = NumericProperty(0)
 
     def __init__(self, max_height=dp(200), **kwargs):
         super().__init__(**kwargs)
@@ -98,16 +100,17 @@ class Container(DropDown):
         if self.auto_width:
             self.width = wright - wx
         else:
-            self.width = widget.container_width
+            self.width = self.initial_width
         
         if self.container_position == 'auto':
             # ensure the dropdown list doesn't get out on the X axis, with a
             # preference to 0 in case the list is too wide.
-            x = wx
+            x = wright - self.width
             if x + self.width > win.width:
                 x = win.width - self.width
-            if x < 0:
+            elif x < 0:
                 x = 0
+
             self.x = x
 
             # determine if we display the dropdown upper or lower to the widget
@@ -136,8 +139,6 @@ class Container(DropDown):
 
             return
         
-        # self.height = widget.container_height
-
         if self.container_position == "left-top":
             self.x = wx - self.width/2
             self.y = wtop
@@ -174,6 +175,14 @@ class Container(DropDown):
             self.x = wx + widget.width/2
             self.y = wy - self.height
 
+        elif self.container_position == "left-aligned":
+            self.x = wx 
+            self.y = wy - self.height
+
+        elif self.container_position == "right-aligned":
+            self.x = wright - self.width
+            self.y = wy - self.height
+
 
 class CDropDown(ButtonBehavior, BoxLayout):
     values = ListProperty()
@@ -182,9 +191,9 @@ class CDropDown(ButtonBehavior, BoxLayout):
     is_open = BooleanProperty(False)
 
     container_height = NumericProperty(dp(200))
-    container_width = NumericProperty(0)
+    container_width = NumericProperty()
     container_position = OptionProperty(
-        "auto", options=["auto", "left-top", "top", "right-top", "left", "center", "right", "left-bottom", "bottom", "right-bottom"]
+        "auto", options=["auto", "left-top", "top", "right-top", "left", "center", "right", "left-bottom", "bottom", "right-bottom", "left-aligned", "right-aligned"]
     )
     container_bg_color = ColorProperty()
 
@@ -203,6 +212,7 @@ class CDropDown(ButtonBehavior, BoxLayout):
     bg_color = ListProperty([1, 1, 1, 1])
     radius = ListProperty([0, 0, 0, 0])
 
+
     def __init__(self, **kwargs):
         self._dropdown = None
         super().__init__(**kwargs)
@@ -214,6 +224,17 @@ class CDropDown(ButtonBehavior, BoxLayout):
         fbind("text_autoupdate", self._update_dropdown)
         
         build_dropdown()
+        Clock.schedule_interval(self._check_container_width, 1/15)
+
+    def _check_container_width(self, t):
+        if self.width != 0:
+            if not self.container_width:
+                self._dropdown.initial_width = self.width
+            else:
+                self._dropdown.initial_width = self.container_width
+            self._dropdown.auto_width = False
+            return False
+        return True
 
     def on_container_height(self, *args):
         self._dropdown.max_height = self.container_height
@@ -225,22 +246,14 @@ class CDropDown(ButtonBehavior, BoxLayout):
     def on_container_bg_color(self, *args):
         self._dropdown.bg_color = self.container_bg_color
 
-
     def _build_dropdown(self, *largs):
         if self._dropdown:
             self._dropdown.unbind(on_select=self._on_dropdown_select)
             self._dropdown.unbind(on_dismiss=self._close_dropdown)
             self._dropdown.dismiss()
             self._dropdown = None
-        cls = self.dropdown_cls
-        if isinstance(cls, str):
-            cls = Factory.get(cls)
 
-        if not self.container_width:
-            self._dropdown = cls(auto_width=True)
-        else:
-            self._dropdown = cls()
-
+        self._dropdown = self.dropdown_cls()
 
         self._dropdown.bind(on_select=self._on_dropdown_select)
         self._dropdown.bind(on_dismiss=self._close_dropdown)
@@ -276,8 +289,10 @@ class CDropDown(ButtonBehavior, BoxLayout):
                 item.height = height or item.height
             else:
                 item.height = self.height
+            
             item.bind(on_release=lambda option: dp.select(option.text))
             dp.add_widget(item)
+
         if text_autoupdate:
             if values:
                 if not self.text or self.text not in values:
@@ -310,6 +325,8 @@ class CDropDown(ButtonBehavior, BoxLayout):
         else:
             if self._dropdown.attach_to:
                 self._dropdown.dismiss()
+
+                
 
 # fmt: off
 Builder.load_string("""
