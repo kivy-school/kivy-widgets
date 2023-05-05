@@ -54,22 +54,11 @@ Builder.load_string("""
             pos: self.pos
 
         Color:
-            rgba: black
+            rgba: slate_400
         Line:
             width: 1
             points: self.x, self.y+self.height, self.x+self.width, self.y+self.height
 
-        Color:
-            rgba: black
-        Line:
-            width: 1
-            points: self.x, self.y, self.x, self.y+self.height
-
-        Color:
-            rgba: black
-        Line:
-            width: 1
-            points: self.x+self.width, self.y, self.x+self.width, self.y+self.height
 """)
 # fmt: off
 
@@ -80,6 +69,8 @@ class Container(DropDown):
     )
     bg_color = ColorProperty([1,1,1,1])
     initial_width = NumericProperty(0)
+    border_color = ColorProperty(global_idmap["slate_400"])
+    border_width = NumericProperty(1)
 
     def __init__(self, max_height=dp(200), **kwargs):
         super().__init__(**kwargs)
@@ -196,6 +187,8 @@ class CDropDown(ButtonBehavior, BoxLayout):
         "auto", options=["auto", "left-top", "top", "right-top", "left", "center", "right", "left-bottom", "bottom", "right-bottom", "left-aligned", "right-aligned"]
     )
     container_bg_color = ColorProperty()
+    container_border_color = ColorProperty(global_idmap["slate_400"])
+    container_border_width = NumericProperty(1)
 
     text = StringProperty()
     font_size = NumericProperty(dp(18))
@@ -245,6 +238,12 @@ class CDropDown(ButtonBehavior, BoxLayout):
 
     def on_container_bg_color(self, *args):
         self._dropdown.bg_color = self.container_bg_color
+
+    def on_container_border_color(self, *args):
+        self._dropdown.border_color = self.container_border_color
+
+    def on_container_border_width(self, *args):
+        self._dropdown.border_width = self.container_border_width
 
     def _build_dropdown(self, *largs):
         if self._dropdown:
@@ -368,4 +367,11 @@ Builder.load_string("""
         Rectangle:
             pos: self.pos
             size: self.size
+
+    canvas.after:
+        Color:
+            rgba: root.border_color
+        Line:
+            width: root.border_width
+            rectangle: (self.x, self.y, self.width, self.height)
 """)
