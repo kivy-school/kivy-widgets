@@ -191,6 +191,7 @@ class CDropDown(ButtonBehavior, BoxLayout):
     container_border_width = NumericProperty(1)
 
     text = StringProperty()
+    initial_text = StringProperty()
     font_size = NumericProperty(dp(18))
     font_color = ColorProperty([0,0,0,1])
     bold = BooleanProperty(False)
@@ -201,6 +202,8 @@ class CDropDown(ButtonBehavior, BoxLayout):
 
     border_color = ColorProperty(global_idmap["slate_400"])
     border_width = NumericProperty(1)
+
+    reset_text = BooleanProperty(False)
 
     bg_color = ListProperty([1, 1, 1, 1])
     radius = ListProperty([0, 0, 0, 0])
@@ -218,6 +221,10 @@ class CDropDown(ButtonBehavior, BoxLayout):
         
         build_dropdown()
         Clock.schedule_interval(self._check_container_width, 1/15)
+
+    def on_text(self, *args):
+        if not self.initial_text:
+            self.initial_text = self.text
 
     def _check_container_width(self, t):
         if self.width != 0:
@@ -311,7 +318,10 @@ class CDropDown(ButtonBehavior, BoxLayout):
         Callback called when the dropdown select an option.
         e.g.: data = {'text': 'option1', 'viewclass': 'MyOption'}
         """
-        self.text = text
+        if self.text != text:
+            self.text = text
+        elif self.reset_text:
+            self.text = self.initial_text
         self.is_open = False
 
     def on_is_open(self, instance, value):
