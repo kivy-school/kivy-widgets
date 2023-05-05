@@ -246,6 +246,7 @@ class CDropDown(ButtonBehavior, BoxLayout):
             self._dropdown.auto_width = False
             self.fbind("width", lambda *_: Clock.schedule_once(self.build_canvas))
             self.fbind("mode", lambda *_: Clock.schedule_once(self.build_canvas))
+            self.fbind("y", lambda *_: Clock.schedule_once(self.build_canvas))
             self.build_canvas()
             return False
         return True
@@ -336,10 +337,10 @@ class CDropDown(ButtonBehavior, BoxLayout):
             - anything else: added as an attribute to the viewclass
 
         """
-        dp = self._dropdown
+        dropdown = self._dropdown
         values: dict[str:str] = self.values
         text_autoupdate = self.text_autoupdate
-        dp.clear_widgets()
+        dropdown.clear_widgets()
         for value in values: 
             classname = value.get("viewclass")
 
@@ -358,8 +359,8 @@ class CDropDown(ButtonBehavior, BoxLayout):
             else:
                 item.height = self.height
             
-            item.bind(on_release=lambda option: dp.select(option.text))
-            dp.add_widget(item)
+            item.bind(on_release=lambda option: dropdown.select(option.text))
+            dropdown.add_widget(item)
 
         if text_autoupdate:
             if values:
