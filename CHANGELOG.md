@@ -1,3 +1,10 @@
+# Version: 0.1.11
+
+- ✨ feat: Updated CDropDown:
+  - "Bottom" alignment is the default one
+  - Now you can define the `container_width`
+  - Created two alignments for Container: "left-aligned", "right-aligned"
+
 # Version: 0.1.10
 
 ✨ feat: Added `container_bg_color` property to CDropDown
