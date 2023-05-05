@@ -1,3 +1,9 @@
+# Version: 0.1.14
+
+- ✨ feat: Created two design modes for `CDropDown`:
+  - rectangle (default)
+  - line
+
 # Version: 0.1.13
 
 - ✨ feat: Added `reset_text` behaviour to `CDropDown`
