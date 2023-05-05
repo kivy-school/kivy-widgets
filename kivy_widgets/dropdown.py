@@ -12,7 +12,6 @@ from kivy.properties import (
     OptionProperty,
     StringProperty,
 )
-
 from kivy.uix.behaviors import ButtonBehavior
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.dropdown import DropDown
@@ -78,6 +77,7 @@ class Container(DropDown):
     container_position = OptionProperty(
         "auto", options=["auto", "left-top", "top", "right-top", "left", "center", "right", "left-bottom", "bottom", "right-bottom"]
     )
+    bg_color = ColorProperty([1,1,1,1])
 
     def __init__(self, max_height=dp(200), **kwargs):
         super().__init__(**kwargs)
@@ -186,6 +186,7 @@ class CDropDown(ButtonBehavior, BoxLayout):
     container_position = OptionProperty(
         "auto", options=["auto", "left-top", "top", "right-top", "left", "center", "right", "left-bottom", "bottom", "right-bottom"]
     )
+    container_bg_color = ColorProperty()
 
     text = StringProperty()
     font_size = NumericProperty(dp(18))
@@ -221,9 +222,9 @@ class CDropDown(ButtonBehavior, BoxLayout):
         self._dropdown.container_position = self.container_position
         self._dropdown._reposition()
 
-    def on_values(self, *args):
-        print("on_values")
-        print(self.values)
+    def on_container_bg_color(self, *args):
+        self._dropdown.bg_color = self.container_bg_color
+
 
     def _build_dropdown(self, *largs):
         if self._dropdown:
@@ -239,6 +240,8 @@ class CDropDown(ButtonBehavior, BoxLayout):
             self._dropdown = cls(auto_width=True)
         else:
             self._dropdown = cls()
+
+
         self._dropdown.bind(on_select=self._on_dropdown_select)
         self._dropdown.bind(on_dismiss=self._close_dropdown)
         self._update_dropdown()
@@ -340,4 +343,12 @@ Builder.load_string("""
         icon: root.icon
         icon_color: root.icon_color
         icon_size: root.icon_size
+
+<Container>
+    canvas.before:
+        Color:
+            rgba: root.bg_color
+        Rectangle:
+            pos: self.pos
+            size: self.size
 """)
