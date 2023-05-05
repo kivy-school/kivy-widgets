@@ -292,5 +292,6 @@ Builder.load_string("""
 
 #:set white rgba("#ffffff")
 #:set black rgba("#000000")
+#:set transparent rgba("#00000000")
 """)
 # fmt: on
