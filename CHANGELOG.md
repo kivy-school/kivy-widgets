@@ -1,6 +1,9 @@
 # Version: 0.1.7
 
 - 🐛 fix: Removed padding and spacing from `CButton` (replaced by dummy widgets).
+- ✨ feat: Created `CDropDown` and related classes:
+  - DropDownItem (a clickable Label)
+  - Container (a container for all items of the DropDown, with custom intial positon)
 
 # Version: 0.1.6
 
