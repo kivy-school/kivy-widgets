@@ -1,3 +1,7 @@
+# Version: 0.1.10
+
+✨ feat: Added `container_bg_color` property to CDropDown
+
 # Version: 0.1.9
 
 🐛 fix: Fixed bug in CDropDown: - Making `auto_width = True` when container_width is not provided
