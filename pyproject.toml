@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "kivy-widgets"
-version = "0.1.14"
+version = "0.1.15"
 description = ""
 authors = ["filipemarch <filipe.marchesini@gmail.com>", "ShootingStarDragon <rppapamaths@gmail.com>"]
 readme = "README.md"

@@ -1,3 +1,9 @@
+# Version: 0.1.15
+
+- ✨ feat: Updated `CDropdown`:
+  - Binding `build_canvas` to `y` value
+  - Fixed name collision with `dp` from kivy.metrics
+
 # Version: 0.1.14
 
 - ✨ feat: Created two design modes for `CDropDown`:
