@@ -18,6 +18,10 @@ from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.dropdown import DropDown
 from kivy.uix.label import Label
 
+# import Color, Rectangle, SmoothLine
+from kivy.graphics import Color, Line, SmoothLine
+from kivy.graphics.instructions import InstructionGroup
+
 from .color_definitions import *
 
 
@@ -208,6 +212,12 @@ class CDropDown(ButtonBehavior, BoxLayout):
     bg_color = ListProperty([1, 1, 1, 1])
     radius = ListProperty([0, 0, 0, 0])
 
+    mode = OptionProperty(
+        "rectangle", options=[
+            "rectangle", "line"
+        ]
+    )
+
 
     def __init__(self, **kwargs):
         self._dropdown = None
@@ -222,6 +232,7 @@ class CDropDown(ButtonBehavior, BoxLayout):
         build_dropdown()
         Clock.schedule_interval(self._check_container_width, 1/15)
 
+
     def on_text(self, *args):
         if not self.initial_text:
             self.initial_text = self.text
@@ -233,8 +244,59 @@ class CDropDown(ButtonBehavior, BoxLayout):
             else:
                 self._dropdown.initial_width = self.container_width
             self._dropdown.auto_width = False
+            self.fbind("width", lambda *_: Clock.schedule_once(self.build_canvas))
+            self.fbind("mode", lambda *_: Clock.schedule_once(self.build_canvas))
+            self.build_canvas()
             return False
         return True
+    
+    def build_canvas(self, *args):
+        """
+        On mode 'rectangle', should create the following canvas:
+        canvas.before:
+            Color:
+                rgba: root.border_color
+            SmoothLine:
+                width: root.border_width
+                rounded_rectangle: (self.x, self.y, self.width, self.height, root.radius[0]) if root.radius[0] else (self.x, self.y, self.width, self.height, 1)
+
+        On mode 'line', should create the following canvas:
+        canvas.before:
+            Color:
+                rgba: root.border_color
+            Line:
+                width: 1
+                points: self.x, self.y, self.x+self.width, self.y
+        """
+
+        if "line" in self.__dict__:
+            self.line.clear()
+            self.canvas.remove(self.line)
+
+        self.line = InstructionGroup()
+
+        if self.mode == 'rectangle':
+            self.line.add(Color(
+                rgba=self.border_color
+            ))
+            self.line.add(SmoothLine(
+                width=self.border_width,
+                rounded_rectangle=(self.x, self.y, self.width, self.height, self.radius[0]) if self.radius[0] else (self.x, self.y, self.width, self.height, 1)
+            ))
+        elif self.mode == 'line':
+            self.line.add(
+                Color(
+                    rgba=self.border_color
+                )
+            )
+            self.line.add(
+                Line(
+                    width=1,
+                    points=(self.x, self.y+dp(5), self.x+self.width, self.y+dp(5))
+                )
+            )
+        
+        self.canvas.add(self.line)
 
     def on_container_height(self, *args):
         self._dropdown.max_height = self.container_height
@@ -352,11 +414,6 @@ Builder.load_string("""
             size: self.size
             pos: self.pos
             radius: root.radius
-        Color:
-            rgba: root.border_color
-        SmoothLine:
-            width: root.border_width
-            rounded_rectangle: (self.x, self.y, self.width, self.height, root.radius[0]) if root.radius[0] else (self.x, self.y, self.width, self.height, 1)
 
     Label:
         markup: True
