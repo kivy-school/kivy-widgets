@@ -1,6 +1,10 @@
 from kivy.animation import Animation
 from kivy.clock import Clock
 from kivy.factory import Factory
+
+# import Color, Rectangle, SmoothLine
+from kivy.graphics import Color, Line, SmoothLine
+from kivy.graphics.instructions import InstructionGroup
 from kivy.lang import Builder, global_idmap
 from kivy.metrics import dp
 from kivy.properties import (
@@ -17,10 +21,6 @@ from kivy.uix.behaviors import ButtonBehavior
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.dropdown import DropDown
 from kivy.uix.label import Label
-
-# import Color, Rectangle, SmoothLine
-from kivy.graphics import Color, Line, SmoothLine
-from kivy.graphics.instructions import InstructionGroup
 
 from .color_definitions import *
 
@@ -392,8 +392,9 @@ class CDropDown(ButtonBehavior, BoxLayout):
             height = self.container_height
             self._dropdown.open(self)
             self._dropdown.height = 0
-            Animation(height=height, d=0.2, t="out_cubic").start(self._dropdown)
-
+            anim = Animation(height=height, d=0.2, t="out_cubic")
+            anim.bind(on_progress=lambda *_: setattr(self._dropdown, "scroll_y", 1))
+            anim.start(self._dropdown)
         else:
             if self._dropdown.attach_to:
                 self._dropdown.dismiss()
