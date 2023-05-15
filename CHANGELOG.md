@@ -1,3 +1,7 @@
+# Version: 0.1.16
+
+- 🐛 fix: CDropDown updates container.scroll_y to 1 on animation progress
+
 # Version: 0.1.15
 
 - ✨ feat: Updated `CDropdown`:
