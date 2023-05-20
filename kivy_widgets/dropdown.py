@@ -75,6 +75,7 @@ class Container(DropDown):
     initial_width = NumericProperty(0)
     border_color = ColorProperty(global_idmap["slate_400"])
     border_width = NumericProperty(1)
+    effect_cls = StringProperty("ScrollEffect")
 
     def __init__(self, max_height=dp(200), **kwargs):
         super().__init__(**kwargs)
@@ -193,6 +194,8 @@ class CDropDown(ButtonBehavior, BoxLayout):
     container_bg_color = ColorProperty()
     container_border_color = ColorProperty(global_idmap["slate_400"])
     container_border_width = NumericProperty(1)
+
+    effect_cls = StringProperty("ScrollEffect")
 
     text = StringProperty()
     initial_text = StringProperty()
@@ -314,6 +317,9 @@ class CDropDown(ButtonBehavior, BoxLayout):
 
     def on_container_border_width(self, *args):
         self._dropdown.border_width = self.container_border_width
+
+    def on_effect_cls(self, *args):
+        self._dropdown.effect_cls = self.effect_cls
 
     def _build_dropdown(self, *largs):
         if self._dropdown:
