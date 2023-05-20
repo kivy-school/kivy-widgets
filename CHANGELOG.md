@@ -1,3 +1,7 @@
+# Version: 0.1.17
+
+- ✨ feat: Added defaut `effect_cls` to Container from CDropDown
+
 # Version: 0.1.16
 
 - 🐛 fix: CDropDown updates container.scroll_y to 1 on animation progress
