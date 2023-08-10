@@ -1,3 +1,7 @@
+# Version: 0.1.18
+
+- 🐛 fix: `CDropDown._update_dropdown` does not pass `viewclass` attributes directly on `__init__`, avoiding TypeError.
+
 # Version: 0.1.17
 
 - ✨ feat: Added defaut `effect_cls` to Container from CDropDown
