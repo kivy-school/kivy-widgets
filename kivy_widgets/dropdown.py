@@ -356,7 +356,9 @@ class CDropDown(ButtonBehavior, BoxLayout):
             copy_value = value.copy()
             copy_value.pop("viewclass", None)
             cls = Factory.get(classname)
-            item = cls(**copy_value)
+            item = cls()
+            for k, v in copy_value.items():
+                setattr(item, k, v)
             item.size_hint_y = None
 
             height = copy_value.get("height")
