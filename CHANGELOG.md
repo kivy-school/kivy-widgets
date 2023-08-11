@@ -1,3 +1,7 @@
+# Version: 0.1.20
+
+- 🐛 fix: Fixed CButton spacing when `current_mode` is "both"
+
 # Version: 0.1.19
 
 - ✨ feat: Added shorten/shorten_from to CButton
