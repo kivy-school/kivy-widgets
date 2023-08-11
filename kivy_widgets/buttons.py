@@ -71,6 +71,15 @@ class CButton(ButtonBehavior, BoxLayout):
         bind=["text", "icon"],
     )
 
+    def on_align_on_left(self, *args):
+        self.on_current_mode()
+
+    def on_left_padding(self, *args):
+        self.on_current_mode()
+
+    def on_icon_position(self, *args):
+        self.on_current_mode()
+
     def on_current_mode(self, *args):
         if len(self.children) > 2:
             children_to_remove = [
