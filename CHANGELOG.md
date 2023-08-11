@@ -1,3 +1,10 @@
+# Version: 0.1.19
+
+- ✨ feat: Added shorten/shorten_from to CButton
+- ✨ feat: Added icon_position property to CButton
+- ✨ feat: Added align_on_left property to CButton
+- ✨ feat: Added left_padding property to CButton
+
 # Version: 0.1.18
 
 - 🐛 fix: `CDropDown._update_dropdown` does not pass `viewclass` attributes directly on `__init__`, avoiding TypeError.
