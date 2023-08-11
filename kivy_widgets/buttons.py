@@ -6,11 +6,14 @@ from kivy.properties import (
     ListProperty,
     NumericProperty,
     StringProperty,
+    BooleanProperty,
+    OptionProperty,
 )
 from kivy.uix.behaviors import ButtonBehavior
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.label import Label
 from kivy.uix.widget import Widget
+from kivy.clock import Clock
 
 
 class CButton(ButtonBehavior, BoxLayout):
@@ -20,16 +23,24 @@ class CButton(ButtonBehavior, BoxLayout):
 
     text = StringProperty()
     font_size = NumericProperty(sp(18))
-    icon = StringProperty()
-    bg_color = ColorProperty([1, 1, 1, 1])
     font_color = ColorProperty([0, 0, 0, 1])
+
+    icon = StringProperty()
     icon_color = ColorProperty([0, 0, 0, 1])
-    radius = ListProperty([dp(5)])
     icon_size = NumericProperty(dp(24))
+    icon_position = OptionProperty("left", options=["left", "right"])
+
+    bg_color = ColorProperty([1, 1, 1, 1])
     border_color = ColorProperty([1, 1, 1, 1])
     border_width = NumericProperty(1)
-    # icon_position = OptionProperty("left", options=["left", "right"])
-    # text_pos = OptionProperty("left", options=["left", "center"])
+    radius = ListProperty([dp(5)])
+
+    align_on_left = BooleanProperty(False)
+    left_padding = NumericProperty(dp(10))
+
+    shorten = BooleanProperty(False)
+    shorten_from = OptionProperty("right", options=["left", "center", "right"])
+    max_width = NumericProperty(0)  # useful for expandable buttons
 
     def get_current_color(self):
         if self.state == "normal":
