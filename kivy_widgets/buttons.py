@@ -92,9 +92,27 @@ class CButton(ButtonBehavior, BoxLayout):
             self.add_widget(Widget(), index=2)
             self.add_widget(Widget(), index=0)
         else:
-            self.add_widget(Widget(), index=0)
-            self.add_widget(Widget(), index=2)
-            self.add_widget(Widget(), index=4)
+            if not self.align_on_left:
+                if self.icon_position == "left":
+                    if self.children[0].icon:
+                        # should put icon on the left
+                        icon = self.children[0]
+                        self.remove_widget(icon)
+                        self.add_widget(icon, index=2)
+                else:
+                    if self.children[1].icon:
+                        # should put icon on the right
+                        icon = self.children[1]
+                        self.remove_widget(icon)
+                        self.add_widget(icon, index=0)
+
+                self.add_widget(Widget(), index=0)
+                self.add_widget(Widget(), index=3)
+
+            else:
+                self.add_widget(
+                    Widget(size_hint_x=None, width=dp(self.left_padding)), index=2
+                )
 
     def on_kv_post(self, *args):
         if not self.text and not self.icon:
