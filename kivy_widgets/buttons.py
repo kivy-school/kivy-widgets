@@ -118,6 +118,99 @@ class CButton(ButtonBehavior, BoxLayout):
         if not self.text and not self.icon:
             self.text = "Button"
 
+    def on_shorten(self, *args):
+        Clock.schedule_once(self.update_label_text_size, 0)
+
+    def update_label_text_size(self, *args):
+        if self.shorten and self.current_mode == "both":
+            if self.icon_position == "left":
+                if not self.align_on_left:
+                    icon = self.children[2]
+                    label = self.children[1]
+                    available = (
+                        self.width - self.left_padding - self.spacing - icon.width
+                    )
+                    if label.texture_size[0] < available:
+                        label.text_size = (
+                            label.texture_size[0] + dp(15),
+                            None,
+                        )
+                    else:
+                        label.text_size = (
+                            available + dp(5),
+                            None,
+                        )
+                else:
+                    icon = self.children[1]
+                    label = self.children[0]
+
+                    if self.max_width:
+                        available = (
+                            self.max_width
+                            - self.spacing
+                            - icon.width
+                            - self.left_padding
+                        )
+                    else:
+                        available = (
+                            self.width - self.spacing - icon.width - self.left_padding
+                        )
+
+                    if label.texture_size[0] < available:
+                        label.text_size = (
+                            label.texture_size[0] + dp(15),
+                            None,
+                        )
+                    else:
+                        label.text_size = (
+                            available - dp(10),
+                            None,
+                        )
+            else:
+                if not self.align_on_left:
+                    icon = self.children[1]
+                    label = self.children[2]
+                    available = (
+                        self.width - self.left_padding - self.spacing - icon.width
+                    )
+
+                    if label.texture_size[0] < available:
+                        label.text_size = (
+                            label.texture_size[0] + dp(15),
+                            None,
+                        )
+                    else:
+                        label.text_size = (
+                            available - dp(25),
+                            None,
+                        )
+                else:
+                    icon = self.children[1]
+                    label = self.children[0]
+
+                    if self.max_width:
+                        available = (
+                            self.max_width
+                            - self.spacing
+                            - icon.width
+                            - self.left_padding
+                        )
+                    else:
+                        available = (
+                            self.width - self.spacing - icon.width - self.left_padding
+                        )
+
+                    if label.texture_size[0] < available:
+                        label.text_size = (
+                            label.texture_size[0] + dp(15),
+                            None,
+                        )
+                    else:
+                        label.text_size = (
+                            available - dp(10),
+                            None,
+                        )
+
 
 # fmt: off
 Builder.load_string("""
