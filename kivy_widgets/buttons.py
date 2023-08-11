@@ -215,7 +215,7 @@ class CButton(ButtonBehavior, BoxLayout):
 # fmt: off
 Builder.load_string("""
 <-CButton>:
-    spacing: dp(10)
+    spacing: dp(10) if self.current_mode == "both" else 0
     size_hint: None, None
     _width: None
     width: (label.texture_size[0] + icon.size[0] + dp(35) if icon.size[0] < dp(50) and icon.icon and label.text else label.texture_size[0] + icon.size[0]+ dp(20)) if not self._width else self._width
