@@ -215,6 +215,7 @@ class CButton(ButtonBehavior, BoxLayout):
 # fmt: off
 Builder.load_string("""
 <-CButton>:
+    spacing: dp(10)
     size_hint: None, None
     _width: None
     width: (label.texture_size[0] + icon.size[0] + dp(35) if icon.size[0] < dp(50) and icon.icon and label.text else label.texture_size[0] + icon.size[0]+ dp(20)) if not self._width else self._width
@@ -261,5 +262,7 @@ Builder.load_string("""
         size: self.texture_size
         color: root.font_color
         pos_hint: {'center_y': .5}
+        shorten: root.shorten
+        shorten_from: root.shorten_from
 """)
 # fmt: on
