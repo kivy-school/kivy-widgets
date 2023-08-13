@@ -199,6 +199,13 @@ class CDropDown(ButtonBehavior, BoxLayout):
 
     text = StringProperty()
     initial_text = StringProperty()
+
+    shorten = BooleanProperty(False)
+    shorten_from = OptionProperty(
+        "right", options=["left", "center", "right"]
+    )
+    max_width = NumericProperty(allownone=True, default=None)
+
     font_size = NumericProperty(dp(18))
     font_color = ColorProperty([0,0,0,1])
     bold = BooleanProperty(False)
@@ -237,8 +244,11 @@ class CDropDown(ButtonBehavior, BoxLayout):
 
 
     def on_text(self, *args):
+        self._label.text_size = (None, None)
         if not self.initial_text:
             self.initial_text = self.text
+
+        Clock.schedule_once(self.update_label_text_size)
 
     def _check_container_width(self, t):
         if self.width != 0:
@@ -407,6 +417,9 @@ class CDropDown(ButtonBehavior, BoxLayout):
             if self._dropdown.attach_to:
                 self._dropdown.dismiss()
 
+    def update_label_text_size(self, *args):
+        if self.max_width and self._label.texture_size[0] >= self.max_width:
+            self._label.text_size = (min(self._label.texture_size[0], self.max_width), None)
                 
 
 # fmt: off
@@ -416,7 +429,8 @@ Builder.load_string("""
     size_hint: None, None
     height: dp(50)
     width: self.minimum_width
-    
+    _label: _label.__self__
+                
     canvas.before:
         Color:
             rgba: root.bg_color if self.state == "normal" else [root.bg_color[0]*0.9, root.bg_color[1]*0.9, root.bg_color[2]*0.9, root.bg_color[3]]
@@ -426,12 +440,15 @@ Builder.load_string("""
             radius: root.radius
 
     Label:
+        id: _label
         markup: True
         text: root.text if not root.bold else f'[b]{root.text}[/b]'
         color: root.font_color
         font_size: root.font_size
         size_hint_x: None
         width: self.texture_size[0] + dp(10)
+        shorten: root.shorten
+        shorten_from: root.shorten_from
     Icon:
         icon: root.icon
         icon_color: root.icon_color
