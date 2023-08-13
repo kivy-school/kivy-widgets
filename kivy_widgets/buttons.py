@@ -1,19 +1,19 @@
+from kivy.clock import Clock
 from kivy.lang import Builder
 from kivy.metrics import dp, sp
 from kivy.properties import (
     AliasProperty,
+    BooleanProperty,
     ColorProperty,
     ListProperty,
     NumericProperty,
-    StringProperty,
-    BooleanProperty,
     OptionProperty,
+    StringProperty,
 )
 from kivy.uix.behaviors import ButtonBehavior
 from kivy.uix.boxlayout import BoxLayout
 from kivy.uix.label import Label
 from kivy.uix.widget import Widget
-from kivy.clock import Clock
 
 
 class CButton(ButtonBehavior, BoxLayout):
