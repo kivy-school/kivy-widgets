@@ -1,3 +1,9 @@
+# Version: 0.1.21
+
+✨ feat: Added `shorten` functionality to CDropDown:
+
+- Now you can pass `shorten`, `shorten_from` and `max_width` to CDropDown, and it will apply these properties to the main CDropDown label
+
 # Version: 0.1.20
 
 - 🐛 fix: Fixed CButton spacing when `current_mode` is "both"
