@@ -210,6 +210,23 @@ class CButton(ButtonBehavior, BoxLayout):
                             available - dp(10),
                             None,
                         )
+        elif self.shorten and self.current_mode == "text":
+            label = self.children[1]
+            if self.max_width:
+                available = self.max_width
+            else:
+                available = self.width
+
+            if label.texture_size[0] < available:
+                label.text_size = (
+                    label.texture_size[0] + dp(15),
+                    None,
+                )
+            else:
+                label.text_size = (
+                    available - dp(10),
+                    None,
+                )
 
 
 # fmt: off
