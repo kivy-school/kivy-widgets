@@ -1,3 +1,7 @@
+# Version: 0.1.23
+
+✨ feat: Added `markup` property to CDropDown.
+
 # Version: 0.1.22
 
 ✨ feat: Added `markup` property to CButton.
