@@ -1,3 +1,7 @@
+# Version: 0.1.22
+
+✨ feat: Added `markup` property to CButton.
+
 # Version: 0.1.21
 
 ✨ feat: Added `shorten` functionality to CDropDown:
