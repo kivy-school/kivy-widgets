@@ -22,6 +22,7 @@ class CButton(ButtonBehavior, BoxLayout):
     """
 
     text = StringProperty()
+    markup = BooleanProperty(False)
     font_size = NumericProperty(sp(18))
     font_color = ColorProperty([0, 0, 0, 1])
 
@@ -274,6 +275,7 @@ Builder.load_string("""
     Label:
         id: label
         text: root.text
+        markup: root.markup
         font_size: root.font_size
         size_hint: None, None
         size: self.texture_size
