@@ -198,6 +198,7 @@ class CDropDown(ButtonBehavior, BoxLayout):
     effect_cls = StringProperty("ScrollEffect")
 
     text = StringProperty()
+    markup = BooleanProperty(False)
     initial_text = StringProperty()
 
     shorten = BooleanProperty(False)
@@ -441,7 +442,7 @@ Builder.load_string("""
 
     Label:
         id: _label
-        markup: True
+        markup: root.markup
         text: root.text if not root.bold else f'[b]{root.text}[/b]'
         color: root.font_color
         font_size: root.font_size
