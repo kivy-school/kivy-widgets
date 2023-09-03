@@ -261,6 +261,7 @@ class CDropDown(ButtonBehavior, BoxLayout):
             self.fbind("width", lambda *_: Clock.schedule_once(self.build_canvas))
             self.fbind("mode", lambda *_: Clock.schedule_once(self.build_canvas))
             self.fbind("y", lambda *_: Clock.schedule_once(self.build_canvas))
+            self.fbind("x", lambda *_: Clock.schedule_once(self.build_canvas))
             self.build_canvas()
             return False
         return True
