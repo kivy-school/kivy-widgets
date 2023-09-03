@@ -1,3 +1,7 @@
+# Version: 0.1.24
+
+✨ feat: Binding `CDropDown.build_canvas` to changes on `x` property
+
 # Version: 0.1.23
 
 ✨ feat: Added `markup` property to CDropDown.
