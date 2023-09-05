@@ -1,8 +1,10 @@
 {
-    "python.formatting.provider": "black",
-    "editor.formatOnSave": true,
-    "python.linting.flake8Args": [
-        "--max-line-length=88"
-    ],
-    "materialkv.pythonFile": "main.py",
+  "editor.formatOnSave": true,
+  "materialkv.pythonFile": "main.py",
+  "[python]": {
+    "editor.defaultFormatter": "ms-python.black-formatter",
+    "editor.codeActionsOnSave": {
+      "source.organizeImports": true
+       }
+  },
 }
