@@ -1,3 +1,8 @@
+# Version: 0.1.25
+
+✨ feat: Added `halign` property to `CButton`
+✨ feat: Importing `buttons`, `dropdown` and `icons` modules when using star (\*) import
+
 # Version: 0.1.24
 
 ✨ feat: Binding `CDropDown.build_canvas` to changes on `x` property
