@@ -25,6 +25,7 @@ class CButton(ButtonBehavior, BoxLayout):
     markup = BooleanProperty(False)
     font_size = NumericProperty(sp(18))
     font_color = ColorProperty([0, 0, 0, 1])
+    halign = OptionProperty("center", options=["left", "center", "right"])
 
     icon = StringProperty()
     icon_color = ColorProperty([0, 0, 0, 1])
@@ -275,6 +276,7 @@ Builder.load_string("""
     Label:
         id: label
         text: root.text
+        halign: root.halign
         markup: root.markup
         font_size: root.font_size
         size_hint: None, None
