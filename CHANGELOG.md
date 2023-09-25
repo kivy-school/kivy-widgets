@@ -1,3 +1,7 @@
+# Version: 0.1.26
+
+🐛 fix: Fixed CButton `shorten` function when the user gives some value to `max_width`
+
 # Version: 0.1.25
 
 ✨ feat: Added `halign` property to `CButton`
