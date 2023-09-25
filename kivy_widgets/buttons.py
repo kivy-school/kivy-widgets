@@ -129,9 +129,11 @@ class CButton(ButtonBehavior, BoxLayout):
                 if not self.align_on_left:
                     icon = self.children[2]
                     label = self.children[1]
+
                     available = (
                         self.width - self.left_padding - self.spacing - icon.width
                     )
+
                     if label.texture_size[0] < available:
                         label.text_size = (
                             label.texture_size[0] + dp(15),
@@ -149,13 +151,13 @@ class CButton(ButtonBehavior, BoxLayout):
                     if self.max_width:
                         available = (
                             self.max_width
+                            - self.left_padding
                             - self.spacing
                             - icon.width
-                            - self.left_padding
                         )
                     else:
                         available = (
-                            self.width - self.spacing - icon.width - self.left_padding
+                            self.width - self.left_padding - self.spacing - icon.width
                         )
 
                     if label.texture_size[0] < available:
@@ -172,9 +174,18 @@ class CButton(ButtonBehavior, BoxLayout):
                 if not self.align_on_left:
                     icon = self.children[1]
                     label = self.children[2]
-                    available = (
-                        self.width - self.left_padding - self.spacing - icon.width
-                    )
+
+                    if self.max_width:
+                        available = (
+                            self.max_width
+                            - self.left_padding
+                            - self.spacing
+                            - icon.width
+                        )
+                    else:
+                        available = (
+                            self.width - self.left_padding - self.spacing - icon.width
+                        )
 
                     if label.texture_size[0] < available:
                         label.text_size = (
@@ -212,6 +223,7 @@ class CButton(ButtonBehavior, BoxLayout):
                             available - dp(10),
                             None,
                         )
+
         elif self.shorten and self.current_mode == "text":
             label = self.children[1]
             if self.max_width:
