@@ -1,3 +1,7 @@
+# Version: 0.1.27
+
+✨ feat: Loading icon unicodes on **init**
+
 # Version: 0.1.26
 
 🐛 fix: Fixed CButton `shorten` function when the user gives some value to `max_width`
