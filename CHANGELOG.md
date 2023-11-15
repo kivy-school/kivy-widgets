@@ -1,3 +1,7 @@
+# Version: 0.1.28
+
+✨ feat: Created `CircularRippleBehavior` component
+
 # Version: 0.1.27
 
 ✨ feat: Loading icon unicodes on **init**
