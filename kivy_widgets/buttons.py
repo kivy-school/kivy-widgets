@@ -1,4 +1,3 @@
-import sys
 from kivy.clock import Clock
 from kivy.lang import Builder
 from kivy.metrics import dp, sp
@@ -246,65 +245,7 @@ class CButton(ButtonBehavior, BoxLayout):
 
 
 # fmt: off
-# PYTHON 2
-
-if sys.version_info[0] == 2:
-    Builder.load_string("""
-<-CButton>:
-    spacing: dp(10) if self.current_mode == "both" else 0
-    size_hint: None, None
-    _width: None
-    width: (label.texture_size[0] + icon.size[0] + dp(35) if icon.size[0] < dp(50) and icon.icon and label.text else label.texture_size[0] + icon.size[0]+ dp(20)) if not self._width else self._width
-
-    _height: None
-    height: (dp(50) if icon.size[1] < dp(50) else icon.size[1]) if not self._height else self._height
-
-    canvas.before:
-        Color:
-            rgba: root.current_color
-        RoundedRectangle:
-            size: self.size
-            pos: self.pos
-            radius: root.radius
-        Color:
-            rgba: root.border_color if root.border_width else (0,0,0,0)
-        SmoothLine:
-            width: root.border_width
-            rounded_rectangle: (self.x, self.y, self.width, self.height, root.radius[0])
-
-    Label:
-        id: icon
-        text: u"{}".format(unicode[root.icon]) if root.icon in unicode else "blank"
-        icon: root.icon
-        font_name: icon_font
-        size_hint: (None, None)
-        size: self.texture_size if self.icon else (dp(0), dp(0))
-        font_size: root.icon_size # this is the icon size
-        pos_hint: {"center_x": .5, "center_y": .5}
-        color: root.icon_color
-
-        canvas.before:
-            Color:
-                rgba: root.current_color
-            Rectangle:
-                pos: self.pos
-                size: self.size
-
-    Label:
-        id: label
-        text: root.text
-        halign: root.halign
-        markup: root.markup
-        font_size: root.font_size
-        size_hint: None, None
-        size: self.texture_size
-        color: root.font_color
-        pos_hint: {'center_y': .5}
-        shorten: root.shorten
-        shorten_from: root.shorten_from
-""")
-elif sys.version_info[0] == 3:
-    Builder.load_string("""
+Builder.load_string("""
 <-CButton>:
     spacing: dp(10) if self.current_mode == "both" else 0
     size_hint: None, None
