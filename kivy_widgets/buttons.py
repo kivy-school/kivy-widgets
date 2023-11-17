@@ -28,7 +28,7 @@ class CButton(ButtonBehavior, BoxLayout):
     halign = OptionProperty("center", options=["left", "center", "right"])
 
     icon = StringProperty()
-    icon_font = StringProperty()
+    
     icon_color = ColorProperty([0, 0, 0, 1])
     icon_size = NumericProperty(dp(24))
     icon_position = OptionProperty("left", options=["left", "right"])
@@ -272,7 +272,7 @@ Builder.load_string("""
         id: icon
         text: "{}".format(root.icon) if isinstance(root.icon, str) else "blank"
         icon: root.icon
-        font_name: root.icon_font
+        font_name:"materialdesignicons-webfont.ttf"
         size_hint: (None, None)
         size: self.texture_size if self.icon else (dp(0), dp(0))
         font_size: root.icon_size # this is the icon size
