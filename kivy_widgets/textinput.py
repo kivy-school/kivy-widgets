@@ -80,17 +80,18 @@ class CTextInput(ButtonBehavior, FloatLayout):
             return
 
         if animate:
-            if not self.moving_hint_text:
-                self.anim = Animation(
-                    pos_hint=pos_hint,
-                    font_size=dp(12),
-                    duration=0.15,
-                    color=self.hint_text_color_active,
-                )
-                self.anim.start(self.hint_text_label)
-                self.anim.bind(on_progress=self.on_progress)
-                if self.mode == "rectangle":
-                    self.anim.bind(on_complete=self.on_complete)
+            if self.moving_hint_text and self.mode == "rectangle":
+                return
+            self.anim = Animation(
+                pos_hint=pos_hint,
+                font_size=dp(12),
+                duration=0.15,
+                color=self.hint_text_color_active,
+            )
+            self.anim.start(self.hint_text_label)
+            self.anim.bind(on_progress=self.on_progress)
+            if self.mode == "rectangle":
+                self.anim.bind(on_complete=self.on_complete)
         else:
             self.hint_text_label.pos_hint = pos_hint
             self.hint_text_label.font_size = dp(12)
@@ -163,6 +164,7 @@ class CTextInput(ButtonBehavior, FloatLayout):
         for instruction in self.instructions_to_delete:
             self.canvas.before.remove(instruction)
         self.instructions_to_delete = []
+        self.moving_hint_text = False
 
     def on_text_validate(self, *args):
         return True
@@ -375,6 +377,9 @@ class CTextInput(ButtonBehavior, FloatLayout):
                 pos=self._update_rounded_rectangle, size=self._update_rounded_rectangle
             )
             Window.bind(on_resize=self._update_rounded_rectangle)
+            Window.bind(
+                on_resize=lambda *args: Clock.schedule_once(self.do_rectangle_layout)
+            )
             Clock.schedule_once(self.do_rectangle_layout)
 
         # elif self.mode == "fill":
