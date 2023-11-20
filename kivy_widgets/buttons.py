@@ -269,7 +269,7 @@ Builder.load_string("""
 
     Label:
         id: icon
-        text: "{}".format(root.icon) if isinstance(root.icon, str) else "blank"
+        text: u"{}".format(unicode[root.icon]) if root.icon in unicode else "blank"
         icon: root.icon
         font_name: icon_font
         size_hint: (None, None)
