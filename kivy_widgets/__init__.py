@@ -14,4 +14,4 @@ font_path = os.path.join(
 global_idmap["unicode"] = icon_unicodes
 global_idmap["icon_font"] = font_path
 
-__all__ = ["buttons", "dropdown", "icons"]
+__all__ = ["buttons", "dropdown", "icons", "textinput"]
