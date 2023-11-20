@@ -19,18 +19,10 @@ from kivy.uix.relativelayout import RelativeLayout
 
 from .icon_definitions import icon_unicodes
 
-__file__ = os.path.abspath(__file__)
-font_path = os.path.join(
-    os.path.dirname(__file__), "fonts", "materialdesignicons-webfont.ttf"
-)
-
-global_idmap["unicode"] = icon_unicodes
-global_idmap["icon_font"] = font_path
-
 
 class Icon(Label):
     icon = StringProperty("android")
-    font_name = StringProperty(font_path)
+    font_name = StringProperty(global_idmap["icon_font"])
     icon_color = ColorProperty([0, 0, 0, 0.1])
     icon_size = NumericProperty(dp(21))
     bg_color = ColorProperty([0, 0, 0, 0])
