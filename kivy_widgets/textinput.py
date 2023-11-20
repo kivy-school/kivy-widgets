@@ -19,6 +19,10 @@ from kivy.properties import (
 from kivy.uix.behaviors import ButtonBehavior
 from kivy.uix.floatlayout import FloatLayout
 
+from .color_definitions import *
+
+# from .icons import Icon
+
 
 class CTextInput(ButtonBehavior, FloatLayout):
     text_input = ObjectProperty()
@@ -26,6 +30,12 @@ class CTextInput(ButtonBehavior, FloatLayout):
     foreground_color = ColorProperty(global_idmap["stone_400"])
     foreground_active_color = ColorProperty(global_idmap["sky_400"])
     font_size = NumericProperty(dp(16))
+
+    icon_left = StringProperty()
+    icon_left_color = ColorProperty(global_idmap["stone_400"])
+    icon_left_color_active = ColorProperty(global_idmap["sky_400"])
+    icon_left_current_color = ColorProperty(global_idmap["stone_400"])
+    icon_right = StringProperty()
 
     text = StringProperty()
     hint_text = StringProperty()
@@ -55,7 +65,7 @@ class CTextInput(ButtonBehavior, FloatLayout):
     instructions_to_delete = ListProperty()
     moving_hint_text = BooleanProperty(False)
 
-    __events__ = ("on_text_validate",)
+    __events__ = ("on_text_validate", "on_icon_left_press", "on_icon_left_release")
 
     def on_text(self, *args):
         print("on_text")
@@ -126,7 +136,10 @@ class CTextInput(ButtonBehavior, FloatLayout):
             return
 
         if self.mode == "line":
-            x = 0
+            if not self.icon_left:
+                x = 0
+            else:
+                x = dp(48) / self.width
             y = (self.helper_text_label.height + dp(8)) / self.height
         elif self.mode == "rectangle":
             x = dp(12) / self.width
@@ -254,12 +267,17 @@ class CTextInput(ButtonBehavior, FloatLayout):
     def on_helper_text(self, *args):
         print("on_helper_text")
         if self.helper_text:
+            if self.icon_left:
+                x = dp(48) / self.width
+            else:
+                x = 0
             pos_hint = {
-                "x": 0,
+                "x": x,
                 "y": (self.helper_text_label.height + dp(8)) / self.height,
             }
             self.hint_text_pos_hint = pos_hint
             self.text_input.pos_hint = pos_hint
+            self.text_input.width = self.width - dp(48)
 
     def do_line_layout(self, *args):
         print("do_line_layout")
@@ -278,14 +296,20 @@ class CTextInput(ButtonBehavior, FloatLayout):
         # Whenever the helper_text_label height changes, we need to update the hint_text_pos_hint
         if self.helper_text:
             self.helper_text_label.bind(height=self.on_helper_text)
+            Window.bind(
+                on_resize=lambda *args: Clock.schedule_once(self.on_helper_text)
+            )
             self.on_helper_text()
         else:
             pos_hint = {
-                "x": 0,
+                "x": 0 if not self.icon_left else dp(48) / self.width,
                 "y": (dp(4)) / self.height,
             }
             self.hint_text_pos_hint = pos_hint
             self.text_input.pos_hint = pos_hint
+
+            # if self.icon_left:
+            #     self.text_input.width = self.width - dp(48)
 
     def do_rectangle_layout(self, *args):
         # check if there is a helper_text
@@ -329,34 +353,36 @@ class CTextInput(ButtonBehavior, FloatLayout):
         if self.text:
             Clock.schedule_once(partial(self.move_hint_text_upwards, False))
 
+    def create_initial_line(self, *args):
+        if self.helper_text:
+            line_points = [
+                self.x,
+                self.helper_text_label.top + dp(4),
+                self.right,
+                self.helper_text_label.top + dp(4),
+            ]
+        else:
+            line_points = [
+                self.x,
+                self.helper_text_label.top,
+                self.right,
+                self.helper_text_label.top,
+            ]
+
+        with self.canvas.before:
+            self.line_instruction_color = Color(rgba=self.line_color)
+            self._line = Line(width=dp(1), points=line_points)
+
+        self.bind(pos=self._update_line_pos, right=self._update_line_pos)
+        Clock.schedule_once(self.do_line_layout)
+
     def on_mode(self, *args):
         self.text_input.bind(focus=self.on_focus_text_input)
         self.restore_hint_text_event = None
         self.restore_line_event = None
 
         if self.mode == "line":
-            if self.helper_text:
-                line_points = [
-                    self.x,
-                    self.helper_text_label.top + dp(4),
-                    self.right,
-                    self.helper_text_label.top + dp(4),
-                ]
-            else:
-                line_points = [
-                    self.x,
-                    self.helper_text_label.top,
-                    self.right,
-                    self.helper_text_label.top,
-                ]
-
-            with self.canvas.before:
-                self.line_instruction_color = Color(rgba=self.line_color)
-                self._line = Line(width=dp(1), points=line_points)
-
-            self.bind(pos=self._update_line_pos, right=self._update_line_pos)
-            Window.bind(on_resize=self._update_line_pos)
-            Clock.schedule_once(self.do_line_layout)
+            Clock.schedule_once(self.create_initial_line)
 
         elif self.mode == "rectangle":
             # create a SmoothLine in a format of a rounded rectangle
@@ -376,7 +402,11 @@ class CTextInput(ButtonBehavior, FloatLayout):
             self.bind(
                 pos=self._update_rounded_rectangle, size=self._update_rounded_rectangle
             )
-            Window.bind(on_resize=self._update_rounded_rectangle)
+            Window.bind(
+                on_resize=lambda *args: Clock.schedule_once(
+                    self._update_rounded_rectangle
+                )
+            )
             Window.bind(
                 on_resize=lambda *args: Clock.schedule_once(self.do_rectangle_layout)
             )
@@ -420,6 +450,12 @@ class CTextInput(ButtonBehavior, FloatLayout):
 
         self._line.points = line_points
 
+    def on_icon_left_press(self, *args):
+        return True
+
+    def on_icon_left_release(self, *args):
+        return True
+
 
 # fmt: off
 Builder.load_string("""
@@ -427,7 +463,7 @@ Builder.load_string("""
     size_hint_y: None
     height: dp(60)
 
-    on_release: 
+    on_release:
         text_input.focus = True
     on_press: 
         text_input.focus = True
@@ -435,7 +471,34 @@ Builder.load_string("""
     helper_text_label: helper_text_label
     hint_text_label: hint_text_label
     text_input: text_input
-    
+
+    #TODO icon left                 
+    # _icon_left: _icon_left
+
+    # CButton:
+    #     text: ''
+    #     opacity: 0 if not root.icon_left else 1
+    #     id: _icon_left
+    #     icon: root.icon_left
+    #     active: text_input.focus
+    #     on_active:
+    #         if self.active: root.icon_left_current_color = root.icon_left_color_active
+    #         else: root.icon_left_current_color = root.icon_left_color
+    #     icon_color: root.icon_left_current_color
+    #     icon_size: dp(24)
+    #     _width: dp(24)
+    #     _height: dp(24)
+    #     pos_hint: {'x': dp(12)/root.width, 'y': text_input.pos_hint['y'] + text_input.height/2/ root.height - dp(12)/root.height if (text_input.text or (not text_input.text and text_input.focus)) else text_input.pos_hint['y']}
+    #     bg_color: transparent
+    #     on_press: 
+    #         root.dispatch('on_icon_left_press')
+    #         text_input.focus = True
+    #     on_release: 
+    #         root.dispatch('on_icon_left_release')
+    #         text_input.focus = True
+
+    #########################
+
     # The actual TextInput
     TextInput:
         id: text_input
