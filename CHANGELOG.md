@@ -1,3 +1,7 @@
+# Version: 0.1.29
+
+✨ feat: Created new `CTextInput` component
+
 # Version: 0.1.28
 
 ✨ feat: Created `CircularRippleBehavior` component
