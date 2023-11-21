@@ -2,7 +2,7 @@ from functools import partial
 
 from kivy.animation import Animation
 from kivy.clock import Clock
-from kivy.core.window import Window
+from kivy.core.window import EventLoop, Window
 from kivy.graphics import Color, Line, Rectangle, SmoothLine
 from kivy.lang import Builder, global_idmap
 from kivy.metrics import dp
@@ -17,7 +17,9 @@ from kivy.properties import (
     StringProperty,
 )
 from kivy.uix.behaviors import ButtonBehavior
+from kivy.uix.behaviors.focus import FocusBehavior
 from kivy.uix.floatlayout import FloatLayout
+from kivy.uix.textinput import TextInput
 
 from .color_definitions import *
 
@@ -61,6 +63,8 @@ class CTextInput(ButtonBehavior, FloatLayout):
     use_handles = BooleanProperty(False)
     write_tab = BooleanProperty(False)
     selection_color = ColorProperty([0.1843, 0.6549, 0.8313, 0.5])
+
+    target = ObjectProperty(allownone=True, defaultvalue=None)
 
     instructions_to_delete = ListProperty()
     moving_hint_text = BooleanProperty(False)
