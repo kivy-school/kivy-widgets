@@ -461,6 +461,27 @@ class CTextInput(ButtonBehavior, FloatLayout):
         return True
 
 
+class RetargetTextInput(TextInput):
+    target = ObjectProperty(allownone=True, defaultvalue=None)
+
+    def _ensure_keyboard(self):
+        """
+        We override this method to change the target of the keyboard
+        """
+
+        if self._keyboard is None:
+            self._requested_keyboard = True
+            keyboard = self._keyboard = EventLoop.window.request_keyboard(
+                self._keyboard_released,
+                self.target or self.parent,  # <--- this is the only line that changed
+                input_type=self.input_type,
+                keyboard_suggestions=self.keyboard_suggestions,
+            )
+            keyboards = FocusBehavior._keyboards
+            if keyboard not in keyboards or self not in list(keyboards.values()):
+                keyboards[keyboard] = None
+
+
 # fmt: off
 Builder.load_string("""
 <CTextInput>
