@@ -484,6 +484,8 @@ class RetargetTextInput(TextInput):
 
 # fmt: off
 Builder.load_string("""
+#:import FocusBehavior kivy.uix.behaviors.focus.FocusBehavior
+                    
 <CTextInput>
     size_hint_y: None
     height: dp(60)
@@ -496,6 +498,11 @@ Builder.load_string("""
     helper_text_label: helper_text_label
     hint_text_label: hint_text_label
     text_input: text_input
+                    
+    on_touch_down:
+        touch = args[1]
+        if self.collide_point(*touch.pos): FocusBehavior.ignored_touch.append(touch)
+
 
     #TODO icon left                 
     # _icon_left: _icon_left
@@ -525,7 +532,7 @@ Builder.load_string("""
     #########################
 
     # The actual TextInput
-    TextInput:
+    RetargetTextInput:
         id: text_input
         text: root.text
         size_hint: None, None
@@ -546,6 +553,7 @@ Builder.load_string("""
         background_active: ''
         background_normal: ''
         font_size: root.font_size
+        target: root.target
 
     # The hint text
     Label:
