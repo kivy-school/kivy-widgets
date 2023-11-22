@@ -1,3 +1,13 @@
+# Version: 0.1.31
+
+✨ feat: Created two CTextInput custom handlers:
+
+- insert_text_filter: an optional function that receives str and returns str
+- keyboard_down: an optional function to do anything the user want to the input/text_field
+
+✨ feat: Added `input_type` property to CTextInput
+✨ feat: Created `RoundedRectangleRippleBehavior` component
+
 # Version: 0.1.30
 
 ✨ feat: Added `target` property to `CTextInput`
