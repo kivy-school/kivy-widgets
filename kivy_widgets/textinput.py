@@ -104,12 +104,14 @@ class CTextInput(ButtonBehavior, FloatLayout):
         "on_icon_left_release",
     )
 
-    def insert_text(self, substring, from_undo=False):
-        super(RetargetTextInput, self.text_input).insert_text(
-            self.insert_text_filter(substring), from_undo=from_undo
-        )
+    def insert_text(self, substring: str, from_undo: bool = False):
+        text_to_insert = self.insert_text_filter(substring, self.text_input)
+        if text_to_insert:
+            super(RetargetTextInput, self.text_input).insert_text(
+                text_to_insert, from_undo=from_undo
+            )
 
-    def insert_text_filter(self, substring):
+    def insert_text_filter(self, substring: str, text_input):
         return substring
 
     def keyboard_on_key_down(self, window, keycode, text, modifiers):
