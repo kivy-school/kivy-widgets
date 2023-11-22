@@ -96,6 +96,8 @@ class CTextInput(ButtonBehavior, FloatLayout):
         options=["null", "text", "number", "url", "mail", "datetime", "tel", "address"],
     )
 
+    focus = BooleanProperty(False)
+
     __events__ = (
         "on_text_validate",
         "on_icon_left_press",
@@ -613,6 +615,8 @@ Builder.load_string("""
         insert_text: root.insert_text
         keyboard_on_key_down: root.keyboard_on_key_down
         input_type: root.input_type
+        focus: root.focus
+        on_focus: root.focus = self.focus
 
     # The hint text
     Label:
