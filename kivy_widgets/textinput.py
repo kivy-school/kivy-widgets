@@ -115,8 +115,10 @@ class CTextInput(ButtonBehavior, FloatLayout):
             should_execute_key_down = self.keyboard_down(
                 window, keycode, text, modifiers, self.text_input
             )
+        else:
+            should_execute_key_down = True
 
-        if should_execute_key_down or not self.keyboard_down:
+        if should_execute_key_down:
             return super(RetargetTextInput, self.text_input).keyboard_on_key_down(
                 window, keycode, text, modifiers
             )
