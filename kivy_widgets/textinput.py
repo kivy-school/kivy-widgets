@@ -26,6 +26,27 @@ from .color_definitions import *
 # from .icons import Icon
 
 
+class RetargetTextInput(TextInput):
+    target = ObjectProperty(allownone=True, defaultvalue=None)
+
+    def _ensure_keyboard(self):
+        """
+        We override this method to change the target of the keyboard
+        """
+
+        if self._keyboard is None:
+            self._requested_keyboard = True
+            keyboard = self._keyboard = EventLoop.window.request_keyboard(
+                self._keyboard_released,
+                self.target or self.parent,  # <--- this is the only line that changed
+                input_type=self.input_type,
+                keyboard_suggestions=self.keyboard_suggestions,
+            )
+            keyboards = FocusBehavior._keyboards
+            if keyboard not in keyboards or self not in list(keyboards.values()):
+                keyboards[keyboard] = None
+
+
 class CTextInput(ButtonBehavior, FloatLayout):
     text_input = ObjectProperty()
     background_color = ColorProperty(global_idmap["transparent"])
@@ -69,7 +90,32 @@ class CTextInput(ButtonBehavior, FloatLayout):
     instructions_to_delete = ListProperty()
     moving_hint_text = BooleanProperty(False)
 
-    __events__ = ("on_text_validate", "on_icon_left_press", "on_icon_left_release")
+    keyboard_down = ObjectProperty()
+
+    __events__ = (
+        "on_text_validate",
+        "on_icon_left_press",
+        "on_icon_left_release",
+    )
+
+    def insert_text(self, substring, from_undo=False):
+        super(RetargetTextInput, self.text_input).insert_text(
+            self.insert_text_filter(substring), from_undo=from_undo
+        )
+
+    def insert_text_filter(self, substring):
+        return substring
+
+    def keyboard_on_key_down(self, window, keycode, text, modifiers):
+        if self.keyboard_down:
+            should_execute_key_down = self.keyboard_down(
+                window, keycode, text, modifiers, self.text_input
+            )
+
+        if should_execute_key_down or not self.keyboard_down:
+            return super(RetargetTextInput, self.text_input).keyboard_on_key_down(
+                window, keycode, text, modifiers
+            )
 
     def on_text(self, *args):
         Clock.schedule_once(partial(self.move_hint_text_upwards, False))
@@ -486,27 +532,6 @@ class CTextInput(ButtonBehavior, FloatLayout):
         return True
 
 
-class RetargetTextInput(TextInput):
-    target = ObjectProperty(allownone=True, defaultvalue=None)
-
-    def _ensure_keyboard(self):
-        """
-        We override this method to change the target of the keyboard
-        """
-
-        if self._keyboard is None:
-            self._requested_keyboard = True
-            keyboard = self._keyboard = EventLoop.window.request_keyboard(
-                self._keyboard_released,
-                self.target or self.parent,  # <--- this is the only line that changed
-                input_type=self.input_type,
-                keyboard_suggestions=self.keyboard_suggestions,
-            )
-            keyboards = FocusBehavior._keyboards
-            if keyboard not in keyboards or self not in list(keyboards.values()):
-                keyboards[keyboard] = None
-
-
 # fmt: off
 Builder.load_string("""
 #:import FocusBehavior kivy.uix.behaviors.focus.FocusBehavior
@@ -520,9 +545,9 @@ Builder.load_string("""
     on_press: 
         text_input.focus = True
 
-    helper_text_label: helper_text_label
-    hint_text_label: hint_text_label
-    text_input: text_input
+    helper_text_label: helper_text_label.__self__
+    hint_text_label: hint_text_label.__self__
+    text_input: text_input.__self__
                     
     on_touch_down:
         touch = args[1]
@@ -579,6 +604,8 @@ Builder.load_string("""
         background_normal: ''
         font_size: root.font_size
         target: root.target
+        insert_text: root.insert_text
+        keyboard_on_key_down: root.keyboard_on_key_down
 
     # The hint text
     Label:
