@@ -1,3 +1,9 @@
+# Version: 0.1.30
+
+✨ feat: Added `target` property to `CTextInput`
+✨ feat: Created `RetargetTextInput` component
+🐛 fix: Fixed `create_initial_line` and `on_complete_restore` from CTextInput
+
 # Version: 0.1.29
 
 ✨ feat: Created new `CTextInput` component
