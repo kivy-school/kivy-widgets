@@ -91,6 +91,10 @@ class CTextInput(ButtonBehavior, FloatLayout):
     moving_hint_text = BooleanProperty(False)
 
     keyboard_down = ObjectProperty()
+    input_type = OptionProperty(
+        "null",
+        options=["null", "text", "number", "url", "mail", "datetime", "tel", "address"],
+    )
 
     __events__ = (
         "on_text_validate",
@@ -606,6 +610,7 @@ Builder.load_string("""
         target: root.target
         insert_text: root.insert_text
         keyboard_on_key_down: root.keyboard_on_key_down
+        input_type: root.input_type
 
     # The hint text
     Label:
