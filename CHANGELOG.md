@@ -1,3 +1,8 @@
+# Version: 0.1.32
+
+✨ feat: Updated `insert_text` from `CTextInput`: now the user has the option to handle the insert_text and not dispatch super.insert_text
+✨ feat: Added `focus` property to `CTextInput`
+
 # Version: 0.1.31
 
 ✨ feat: Created two CTextInput custom handlers:
