@@ -299,7 +299,9 @@ class CTextInput(ButtonBehavior, FloatLayout):
 
         # Whenever the helper_text_label height changes, we need to update the hint_text_pos_hint
         if self.helper_text:
-            self.helper_text_label.bind(height=self.on_helper_text)
+            self.helper_text_label.bind(
+                size=lambda *args: Clock.schedule_once(self.on_helper_text)
+            )
             Window.bind(
                 on_resize=lambda *args: Clock.schedule_once(self.on_helper_text)
             )
@@ -377,8 +379,32 @@ class CTextInput(ButtonBehavior, FloatLayout):
             self.line_instruction_color = Color(rgba=self.line_color)
             self._line = Line(width=dp(1), points=line_points)
 
-        self.bind(pos=self._update_line_pos, right=self._update_line_pos)
+        self.bind(
+            pos=lambda *args: Clock.schedule_once(self._update_line_pos),
+            size=lambda *args: Clock.schedule_once(self._update_line_pos),
+        )
         Clock.schedule_once(self.do_line_layout)
+
+    def create_initial_rectangle(self, *args):
+        # create a SmoothLine in a format of a rounded rectangle
+        with self.canvas.before:
+            self.smooth_line_instruction_color = Color(rgba=self.line_color)
+            self.smooth_line = SmoothLine(
+                width=dp(1),
+                rounded_rectangle=(
+                    self.x,
+                    self.y,
+                    self.width,
+                    self.height,
+                    dp(4),
+                ),
+            )
+
+        self.bind(
+            pos=self._update_rounded_rectangle,
+            size=self._update_rounded_rectangle,
+        )
+        Clock.schedule_once(self.do_rectangle_layout)
 
     def on_mode(self, *args):
         self.text_input.bind(focus=self.on_focus_text_input)
@@ -387,6 +413,9 @@ class CTextInput(ButtonBehavior, FloatLayout):
 
         if self.mode == "line":
             Clock.schedule_once(self.create_initial_line)
+
+        elif self.mode == "rectangle":
+            Clock.schedule_once(self.create_initial_rectangle)
 
         elif self.mode == "rectangle":
             # create a SmoothLine in a format of a rounded rectangle
@@ -406,14 +435,14 @@ class CTextInput(ButtonBehavior, FloatLayout):
             self.bind(
                 pos=self._update_rounded_rectangle, size=self._update_rounded_rectangle
             )
-            Window.bind(
-                on_resize=lambda *args: Clock.schedule_once(
-                    self._update_rounded_rectangle
-                )
-            )
-            Window.bind(
-                on_resize=lambda *args: Clock.schedule_once(self.do_rectangle_layout)
-            )
+            # Window.bind(
+            #     on_resize=lambda *args: Clock.schedule_once(
+            #         self._update_rounded_rectangle
+            #     )
+            # )
+            # Window.bind(
+            #     on_resize=lambda *args: Clock.schedule_once(self.do_rectangle_layout)
+            # )
             Clock.schedule_once(self.do_rectangle_layout)
 
         # elif self.mode == "fill":
