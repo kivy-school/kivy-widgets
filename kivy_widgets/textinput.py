@@ -173,8 +173,7 @@ class CTextInput(ButtonBehavior, FloatLayout):
             self.hint_text_label.font_size = dp(16)
             self.hint_text_label.color = self.hint_text_color
 
-    def on_complete_restore(self, resizing_window=False, *args):
-        print("on_complete_restore")
+    def on_complete_restore(self, anim, widget, resizing_window=False, *args):
         for instruction in self.instructions_to_delete:
             self.canvas.before.remove(instruction)
         self.instructions_to_delete = []
@@ -460,7 +459,7 @@ class CTextInput(ButtonBehavior, FloatLayout):
             )
 
         if self.text_input.focus or self.text_input.text:
-            Clock.schedule_once(partial(self.on_complete_restore, True))
+            Clock.schedule_once(partial(self.on_complete_restore, None, None, True))
 
     def _update_line_pos(self, *args):
         if self.helper_text:
