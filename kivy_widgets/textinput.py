@@ -72,11 +72,9 @@ class CTextInput(ButtonBehavior, FloatLayout):
     __events__ = ("on_text_validate", "on_icon_left_press", "on_icon_left_release")
 
     def on_text(self, *args):
-        print("on_text")
         Clock.schedule_once(partial(self.move_hint_text_upwards, False))
 
     def move_hint_text_upwards(self, animate=True, *args):
-        print("move_hint_text_upwards")
         if self.mode == "line":
             x = 0
             y = 1 - dp(12) / self.height
@@ -134,7 +132,6 @@ class CTextInput(ButtonBehavior, FloatLayout):
         self.moving_hint_text = False
 
     def restore_hint_text(self, animate=True, *args):
-        print("restore_hint_text")
         if self.text_input.text:
             self.hint_text_label.color = self.hint_text_color
             return
@@ -176,12 +173,15 @@ class CTextInput(ButtonBehavior, FloatLayout):
             self.hint_text_label.font_size = dp(16)
             self.hint_text_label.color = self.hint_text_color
 
-    def on_complete_restore(self, *args):
+    def on_complete_restore(self, resizing_window=False, *args):
         print("on_complete_restore")
         for instruction in self.instructions_to_delete:
             self.canvas.before.remove(instruction)
         self.instructions_to_delete = []
         self.moving_hint_text = False
+
+        if resizing_window:
+            Clock.schedule_once(self.on_complete)
 
     def on_text_validate(self, *args):
         return True
@@ -273,15 +273,17 @@ class CTextInput(ButtonBehavior, FloatLayout):
         if self.helper_text:
             if self.icon_left:
                 x = dp(48) / self.width
+                width = self.width - dp(48)
             else:
                 x = 0
+                width = self.width
             pos_hint = {
                 "x": x,
                 "y": (self.helper_text_label.height + dp(8)) / self.height,
             }
             self.hint_text_pos_hint = pos_hint
             self.text_input.pos_hint = pos_hint
-            self.text_input.width = self.width - dp(48)
+            self.text_input.width = width
 
     def do_line_layout(self, *args):
         print("do_line_layout")
@@ -435,14 +437,6 @@ class CTextInput(ButtonBehavior, FloatLayout):
             self.bind(
                 pos=self._update_rounded_rectangle, size=self._update_rounded_rectangle
             )
-            # Window.bind(
-            #     on_resize=lambda *args: Clock.schedule_once(
-            #         self._update_rounded_rectangle
-            #     )
-            # )
-            # Window.bind(
-            #     on_resize=lambda *args: Clock.schedule_once(self.do_rectangle_layout)
-            # )
             Clock.schedule_once(self.do_rectangle_layout)
 
         # elif self.mode == "fill":
@@ -464,6 +458,9 @@ class CTextInput(ButtonBehavior, FloatLayout):
                 self.height - dp(20),
                 dp(4),
             )
+
+        if self.text_input.focus or self.text_input.text:
+            Clock.schedule_once(partial(self.on_complete_restore, True))
 
     def _update_line_pos(self, *args):
         if self.helper_text:
