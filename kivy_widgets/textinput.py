@@ -145,6 +145,9 @@ class CTextInput(ButtonBehavior, FloatLayout):
                 self.hint_text_label.color = self.hint_text_color_active
             else:
                 self.hint_text_label.color = self.hint_text_color
+                if not self.text_input.text:
+                    self.restore_hint_text(animate)
+                    Clock.schedule_once(self.on_complete_restore)
             return
 
         if animate:
@@ -229,7 +232,7 @@ class CTextInput(ButtonBehavior, FloatLayout):
             self.hint_text_label.font_size = dp(16)
             self.hint_text_label.color = self.hint_text_color
 
-    def on_complete_restore(self, anim, widget, resizing_window=False, *args):
+    def on_complete_restore(self, anim=None, widget=None, resizing_window=False, *args):
         for instruction in self.instructions_to_delete:
             self.canvas.before.remove(instruction)
         self.instructions_to_delete = []
