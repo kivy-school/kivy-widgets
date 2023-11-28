@@ -72,6 +72,8 @@ class CTextInput(ButtonBehavior, FloatLayout):
     helper_text_color = ColorProperty(global_idmap["stone_400"])
     helper_text_label = ObjectProperty()
 
+    halign = OptionProperty("left", options=["left", "center", "right"])
+
     line_color = ColorProperty(global_idmap["stone_400"])
     line_color_active = ColorProperty(global_idmap["sky_400"])
 
@@ -129,6 +131,9 @@ class CTextInput(ButtonBehavior, FloatLayout):
 
     def on_text(self, *args):
         Clock.schedule_once(partial(self.move_hint_text_upwards, False))
+
+    def on_halign(self, *args):
+        self.text_input.halign = self.halign
 
     def move_hint_text_upwards(self, animate=True, *args):
         if self.mode == "line":
@@ -476,26 +481,6 @@ class CTextInput(ButtonBehavior, FloatLayout):
 
         elif self.mode == "rectangle":
             Clock.schedule_once(self.create_initial_rectangle)
-
-        elif self.mode == "rectangle":
-            # create a SmoothLine in a format of a rounded rectangle
-            with self.canvas.before:
-                self.smooth_line_instruction_color = Color(rgba=self.line_color)
-                self.smooth_line = SmoothLine(
-                    width=dp(1),
-                    rounded_rectangle=(
-                        self.x,
-                        self.y,
-                        self.width,
-                        self.height,
-                        dp(4),
-                    ),
-                )
-
-            self.bind(
-                pos=self._update_rounded_rectangle, size=self._update_rounded_rectangle
-            )
-            Clock.schedule_once(self.do_rectangle_layout)
 
         # elif self.mode == "fill":
 
