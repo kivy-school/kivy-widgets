@@ -361,6 +361,9 @@ class CTextInput(ButtonBehavior, FloatLayout):
         elif self.mode == "rectangle":
             # animate the color self.line_instruction_color
             self.smooth_line_instruction_color.rgba = self.line_color_active
+        elif self.mode == "fill":
+            # animate the color self.line_instruction_color
+            self.smooth_line_instruction_color.rgba = self.line_color_active
 
     def restore_line(self, *args):
         if self.mode == "line":
@@ -376,6 +379,9 @@ class CTextInput(ButtonBehavior, FloatLayout):
             # Start the color animation
             color_animation.start(self.line_instruction_color)
         elif self.mode == "rectangle":
+            self.smooth_line_instruction_color.rgba = self.line_color
+        elif self.mode == "fill":
+            # animate the color self.line_instruction_color
             self.smooth_line_instruction_color.rgba = self.line_color
 
     def on_helper_text(self, *args):
