@@ -1,3 +1,7 @@
+# Version: 0.1.34
+
+✨ feat: Added `icon_left` and `fill` mode to CTextInput
+
 # Version: 0.1.33
 
 ✨ feat: Added `halign` property to `CTextInput`
