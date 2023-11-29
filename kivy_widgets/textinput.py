@@ -3,8 +3,9 @@ from functools import partial
 from kivy.animation import Animation
 from kivy.clock import Clock
 from kivy.core.window import EventLoop, Window
-from kivy.graphics import Color, Line, Rectangle, SmoothLine
+from kivy.graphics import Color, Line, Rectangle, RoundedRectangle, SmoothLine
 from kivy.lang import Builder, global_idmap
+from kivy.logger import Logger
 from kivy.metrics import dp
 from kivy.properties import (
     BooleanProperty,
@@ -21,9 +22,8 @@ from kivy.uix.behaviors.focus import FocusBehavior
 from kivy.uix.floatlayout import FloatLayout
 from kivy.uix.textinput import TextInput
 
+from .buttons import CButton
 from .color_definitions import *
-
-# from .icons import Icon
 
 
 class RetargetTextInput(TextInput):
@@ -58,6 +58,8 @@ class CTextInput(ButtonBehavior, FloatLayout):
     icon_left_color = ColorProperty(global_idmap["stone_400"])
     icon_left_color_active = ColorProperty(global_idmap["sky_400"])
     icon_left_current_color = ColorProperty(global_idmap["stone_400"])
+
+    # TODO icon right
     icon_right = StringProperty()
 
     text = StringProperty()
@@ -74,6 +76,7 @@ class CTextInput(ButtonBehavior, FloatLayout):
 
     halign = OptionProperty("left", options=["left", "center", "right"])
 
+    fill_color = ColorProperty(global_idmap["gray_50"])
     line_color = ColorProperty(global_idmap["stone_400"])
     line_color_active = ColorProperty(global_idmap["sky_400"])
 
@@ -85,6 +88,7 @@ class CTextInput(ButtonBehavior, FloatLayout):
     use_bubble = BooleanProperty(False)
     use_handles = BooleanProperty(False)
     write_tab = BooleanProperty(False)
+    password = BooleanProperty(False)
     selection_color = ColorProperty([0.1843, 0.6549, 0.8313, 0.5])
 
     target = ObjectProperty(allownone=True, defaultvalue=None)
@@ -137,13 +141,28 @@ class CTextInput(ButtonBehavior, FloatLayout):
 
     def move_hint_text_upwards(self, animate=True, *args):
         if self.mode == "line":
-            x = 0
+            x = 0 if not self.icon_left else dp(48) / self.width
             y = 1 - dp(12) / self.height
         elif self.mode == "rectangle":
-            x = dp(12) / self.width
+            x = (dp(12) / self.width) if not self.icon_left else dp(48) / self.width
             y = 1 - dp(6) / self.height
+        elif self.mode == "fill":
+            x = (dp(12) / self.width) if not self.icon_left else dp(48) / self.width
+            y = 1 - dp(17) / self.height
 
         pos_hint = {"x": x, "y": y}
+
+        if self.icon_left and self.mode == "line":
+            anim = Animation(
+                pos_hint={
+                    "x": dp(12) / self.width,
+                    "y": self.text_input.pos_hint["y"]
+                    + self.text_input.height / 2 / self.height
+                    - dp(12) / self.height,
+                },
+                duration=0.15,
+            )
+            anim.start(self._icon_left)
 
         if self.hint_text_label.pos_hint == pos_hint:
             if self.text_input.focus:
@@ -205,20 +224,33 @@ class CTextInput(ButtonBehavior, FloatLayout):
                 x = 0
             else:
                 x = dp(48) / self.width
-            y = (self.helper_text_label.height + dp(8)) / self.height
+            y = self.text_input.pos_hint["y"]
         elif self.mode == "rectangle":
-            x = dp(12) / self.width
+            x = (dp(12) / self.width) if not self.icon_left else dp(48) / self.width
             if self.helper_text:
                 y = (
                     dp(20) + (self.height - dp(20) - self.hint_text_label.height) / 2
                 ) / self.height
             else:
-                y = ((self.height - self.hint_text_label.height) / 2) / self.height
+                y = ((self.height - dp(19)) / 2) / self.height
+        elif self.mode == "fill":
+            x = (dp(12) / self.width) if not self.icon_left else dp(48) / self.width
+            y = ((self.height - dp(19)) / 2) / self.height
 
         pos_hint = {
             "x": x,
             "y": y,
         }
+
+        if self.icon_left and self.mode == "line":
+            anim = Animation(
+                pos_hint={
+                    "x": dp(12) / self.width,
+                    "y": self.text_input.pos_hint["y"],
+                },
+                duration=0.15,
+            )
+            anim.start(self._icon_left)
 
         if self.hint_text_label.pos_hint == pos_hint:
             return
@@ -282,19 +314,34 @@ class CTextInput(ButtonBehavior, FloatLayout):
 
             # let's create a new "line" that starts on the middle of the line
             # and ends on the middle
-            line_points = [
-                self.center_x,
-                self.helper_text_label.top + dp(4),
-                self.center_x,
-                self.helper_text_label.top + dp(4),
-            ]
+            if self.helper_text:
+                line_points = [
+                    self.center_x,
+                    self.helper_text_label.top + dp(4),
+                    self.center_x,
+                    self.helper_text_label.top + dp(4),
+                ]
 
-            final_line_points = [
-                self.x,
-                self.helper_text_label.top + dp(4),
-                self.right,
-                self.helper_text_label.top + dp(4),
-            ]
+                final_line_points = [
+                    self.x,
+                    self.helper_text_label.top + dp(4),
+                    self.right,
+                    self.helper_text_label.top + dp(4),
+                ]
+            else:
+                line_points = [
+                    self.center_x,
+                    self.helper_text_label.top,
+                    self.center_x,
+                    self.helper_text_label.top,
+                ]
+
+                final_line_points = [
+                    self.x,
+                    self.helper_text_label.top,
+                    self.right,
+                    self.helper_text_label.top,
+                ]
 
             self._line.points = line_points
 
@@ -348,6 +395,12 @@ class CTextInput(ButtonBehavior, FloatLayout):
             self.text_input.pos_hint = pos_hint
             self.text_input.width = width
 
+        if self.mode == "fill":
+            Logger.info(
+                "Kivy Widgets: CTextInput: ignoring helper_text in fill mode. Fill mode does not support helper_text"
+            )
+            self.helper_text = ""
+
     def do_line_layout(self, *args):
         print("do_line_layout")
         if self.helper_text:
@@ -378,9 +431,14 @@ class CTextInput(ButtonBehavior, FloatLayout):
             }
             self.hint_text_pos_hint = pos_hint
             self.text_input.pos_hint = pos_hint
+            self.text_input.width = (
+                self.width if not self.icon_left else self.width - dp(56)
+            )
 
-            # if self.icon_left:
-            #     self.text_input.width = self.width - dp(48)
+        self._icon_left.pos_hint = {
+            **self.hint_text_pos_hint,
+            "x": dp(12) / self.width,
+        }
 
     def do_rectangle_layout(self, *args):
         # check if there is a helper_text
@@ -390,7 +448,7 @@ class CTextInput(ButtonBehavior, FloatLayout):
             )
             # and we need to update the hint_text_pos_hint
             text_input_pos_hint = {
-                "x": dp(12) / self.width,
+                "x": dp(12) / self.width if not self.icon_left else dp(48) / self.width,
                 "y": (dp(20) + (self.height - dp(20) - self.text_input.height) / 2)
                 / self.height,
             }
@@ -401,25 +459,44 @@ class CTextInput(ButtonBehavior, FloatLayout):
             }
             self.hint_text_label.pos_hint = hint_text_pos_hint
             self.text_input.pos_hint = text_input_pos_hint
-            self.text_input.width = self.width - dp(20)
+            width = self.width - dp(20) if not self.icon_left else self.width - dp(56)
+            self.text_input.width = width
             self.helper_text_label.pos_hint = {
                 "x": dp(12) / self.width,
                 "y": 0,
             }
-        else:
-            # if there isn't, we need to decrease the height of the widget
-            self.height = self.text_input.height + dp(26)
-            # and we need to update the hint_text_pos_hint
-            pos_hint = {
+            self._icon_left.pos_hint = {
+                "y": self.text_input.pos_hint["y"]
+                + (self.text_input.height - self._icon_left.height) / 2 / self.height,
                 "x": dp(12) / self.width,
-                "y": ((self.height - self.text_input.height) / 2) / self.height,
             }
+        else:
+            self.height = self.text_input.height + dp(26)
+            x = (dp(12) / self.width) if not self.icon_left else dp(48) / self.width
+            width = self.width - dp(20) if not self.icon_left else self.width - dp(56)
+
+            if not self.mode == "fill":
+                pos_hint = {
+                    "x": x,
+                    "y": ((self.height - self.text_input.height) / 2) / self.height,
+                }
+            else:
+                pos_hint = {
+                    "x": x,
+                    "y": 0.1,
+                }
+
             self.hint_text_pos_hint = {
                 **pos_hint,
                 "y": ((self.height - self.hint_text_label.height) / 2) / self.height,
             }
+
             self.text_input.pos_hint = pos_hint
-            self.text_input.width = self.width - dp(20)
+            self.text_input.width = width
+            self._icon_left.pos_hint = {
+                "x": dp(12) / self.width,
+                "y": ((self.height - self._icon_left._height) / 2) / self.height,
+            }
 
         if self.text:
             Clock.schedule_once(partial(self.move_hint_text_upwards, False))
@@ -482,7 +559,8 @@ class CTextInput(ButtonBehavior, FloatLayout):
         elif self.mode == "rectangle":
             Clock.schedule_once(self.create_initial_rectangle)
 
-        # elif self.mode == "fill":
+        elif self.mode == "fill":
+            Clock.schedule_once(self.create_initial_rectangle)
 
     def _update_rounded_rectangle(self, *args):
         if not self.helper_text:
@@ -533,51 +611,55 @@ class CTextInput(ButtonBehavior, FloatLayout):
 # fmt: off
 Builder.load_string("""
 #:import FocusBehavior kivy.uix.behaviors.focus.FocusBehavior
+
                     
 <CTextInput>
+    helper_text_label: helper_text_label.__self__
+    hint_text_label: hint_text_label.__self__
+    text_input: text_input.__self__
+    _icon_left: _icon_left.__self__
+
     size_hint_y: None
     height: dp(60)
 
+    on_touch_down:
+        touch = args[1]
+        if self.collide_point(*touch.pos): FocusBehavior.ignored_touch.append(touch)
     on_release:
         text_input.focus = True
     on_press: 
         text_input.focus = True
-
-    helper_text_label: helper_text_label.__self__
-    hint_text_label: hint_text_label.__self__
-    text_input: text_input.__self__
                     
-    on_touch_down:
-        touch = args[1]
-        if self.collide_point(*touch.pos): FocusBehavior.ignored_touch.append(touch)
-
-
-    #TODO icon left                 
-    # _icon_left: _icon_left
-
-    # CButton:
-    #     text: ''
-    #     opacity: 0 if not root.icon_left else 1
-    #     id: _icon_left
-    #     icon: root.icon_left
-    #     active: text_input.focus
-    #     on_active:
-    #         if self.active: root.icon_left_current_color = root.icon_left_color_active
-    #         else: root.icon_left_current_color = root.icon_left_color
-    #     icon_color: root.icon_left_current_color
-    #     icon_size: dp(24)
-    #     _width: dp(24)
-    #     _height: dp(24)
-    #     pos_hint: {'x': dp(12)/root.width, 'y': text_input.pos_hint['y'] + text_input.height/2/ root.height - dp(12)/root.height if (text_input.text or (not text_input.text and text_input.focus)) else text_input.pos_hint['y']}
-    #     bg_color: transparent
-    #     on_press: 
-    #         root.dispatch('on_icon_left_press')
-    #         text_input.focus = True
-    #     on_release: 
-    #         root.dispatch('on_icon_left_release')
-    #         text_input.focus = True
-
-    #########################
+    canvas.before:
+        Color:
+            rgba: self.fill_color if self.mode == 'fill' else transparent
+        RoundedRectangle:
+            pos: self.pos
+            size: self.size
+            radius: [dp(4), dp(4), dp(4), dp(4)]
+                    
+    # THe icon left
+    CButton:
+        text: ''
+        opacity: 0 if not root.icon_left else 1
+        id: _icon_left
+        icon: root.icon_left
+        active: text_input.focus
+        on_active:
+            if self.active: root.icon_left_current_color = root.icon_left_color_active
+            else: root.icon_left_current_color = root.icon_left_color
+        icon_color: root.icon_left_current_color
+        icon_size: dp(24)
+        _width: dp(24)
+        _height: dp(24)
+        bg_color: transparent
+        border_color: transparent
+        on_press: 
+            root.dispatch('on_icon_left_press')
+            text_input.focus = True
+        on_release: 
+            root.dispatch('on_icon_left_release')
+            text_input.focus = True
 
     # The actual TextInput
     RetargetTextInput:
@@ -607,6 +689,8 @@ Builder.load_string("""
         input_type: root.input_type
         focus: root.focus
         on_focus: root.focus = self.focus
+        password: root.password
+
 
     # The hint text
     Label:
