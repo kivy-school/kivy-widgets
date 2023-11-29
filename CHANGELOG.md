@@ -1,3 +1,7 @@
+# Version: 0.1.35
+
+🐛 fix: Fixed line color update of CTextInput in fill mode
+
 # Version: 0.1.34
 
 ✨ feat: Added `icon_left` and `fill` mode to CTextInput
