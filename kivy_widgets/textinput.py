@@ -110,6 +110,29 @@ class CTextInput(ButtonBehavior, FloatLayout):
         "on_icon_left_release",
     )
 
+    def on_icon_left_color_active(self, *args):
+        if self.text_input.focus:
+            self.icon_left_current_color = self.icon_left_color_active
+
+    def on_foreground_active_color(self, *args):
+        if self.text_input.focus:
+            self.text_input.foreground_color = self.foreground_active_color
+
+    def on_foreground_color(self, *args):
+        if not self.text_input.focus:
+            self.text_input.foreground_color = self.foreground_color
+
+    def on_hint_text_color_active(self, *args):
+        if self.text_input.focus:
+            self.hint_text_label.color = self.hint_text_color_active
+
+    def on_line_color_active(self, *args):
+        if self.text_input.focus:
+            if "line_instruction_color" in self.__dict__:
+                self.line_instruction_color.rgba = self.line_color_active
+            elif "smooth_line_instruction_color" in self.__dict__:
+                self.smooth_line_instruction_color.rgba = self.line_color_active
+
     def insert_text(self, substring: str, from_undo: bool = False):
         text_to_insert = self.insert_text_filter(substring, self.text_input)
         if text_to_insert:
