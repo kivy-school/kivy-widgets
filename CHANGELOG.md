@@ -1,3 +1,13 @@
+# Version: 0.1.36
+
+✨ feat: Created 5 new CTextInput events:
+
+- on_icon_left_color_active
+- on_foreground_active_color
+- on_foreground_color
+- on_hint_text_color_active
+- on_line_color_active
+
 # Version: 0.1.35
 
 🐛 fix: Fixed line color update of CTextInput in fill mode
