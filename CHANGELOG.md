@@ -1,3 +1,7 @@
+# Version: 0.1.37
+
+✨ feat: Created new CBoxLayout component
+
 # Version: 0.1.36
 
 ✨ feat: Created 5 new CTextInput events:
