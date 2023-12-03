@@ -1,3 +1,7 @@
+# Version: 0.1.38
+
+✨ feat: Created new CFloatLayout component
+
 # Version: 0.1.37
 
 ✨ feat: Created new CBoxLayout component
