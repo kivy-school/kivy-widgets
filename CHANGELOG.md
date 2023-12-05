@@ -1,3 +1,7 @@
+# Version: 0.1.39
+
+✨ feat: Now `CTextInput` can start with focus=True
+
 # Version: 0.1.38
 
 ✨ feat: Created new CFloatLayout component
