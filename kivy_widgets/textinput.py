@@ -548,6 +548,7 @@ class CTextInput(ButtonBehavior, FloatLayout):
 
         if self.text or self.focus:
             Clock.schedule_once(partial(self.move_hint_text_upwards, False))
+            Clock.schedule_once(self.on_focus_text_input, 0.1)
 
     def create_initial_line(self, *args):
         if self.helper_text:
