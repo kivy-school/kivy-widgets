@@ -79,6 +79,8 @@ class CTextInput(ButtonBehavior, FloatLayout):
     fill_color = ColorProperty(global_idmap["gray_50"])
     line_color = ColorProperty(global_idmap["stone_400"])
     line_color_active = ColorProperty(global_idmap["sky_400"])
+    line_instruction_color = ObjectProperty(defaultvalue=None, allownone=True)
+    smooth_line_instruction_color = ObjectProperty(defaultvalue=None, allownone=True)
 
     cursor_blink = BooleanProperty(True)
     cursor_color = ColorProperty(global_idmap["sky_400"])
@@ -128,9 +130,9 @@ class CTextInput(ButtonBehavior, FloatLayout):
 
     def on_line_color_active(self, *args):
         if self.text_input.focus:
-            if "line_instruction_color" in self.__dict__:
+            if self.line_instruction_color:
                 self.line_instruction_color.rgba = self.line_color_active
-            elif "smooth_line_instruction_color" in self.__dict__:
+            elif self.smooth_line_instruction_color:
                 self.smooth_line_instruction_color.rgba = self.line_color_active
 
     def insert_text(self, substring: str, from_undo: bool = False):
@@ -321,9 +323,9 @@ class CTextInput(ButtonBehavior, FloatLayout):
                 if self.restore_line_event:
                     print("cancel restore_line_event")
                     self.restore_line_event.cancel()
-                    if "smooth_line_instruction_color" in self.__dict__:
+                    if self.smooth_line_instruction_color:
                         Animation.cancel_all(self.smooth_line_instruction_color, "rgba")
-                    if "line_instruction_color" in self.__dict__:
+                    if self.smooth_line_instruction_color:
                         Animation.cancel_all(self.line_instruction_color, "rgba")
             self.move_hint_text_upwards()
             self.animate_line()
@@ -332,6 +334,9 @@ class CTextInput(ButtonBehavior, FloatLayout):
     def animate_line(self, *args):
         print("animate_line")
         if self.mode == "line":
+            if not self.line_instruction_color:
+                return Clock.schedule_once(self.animate_line)
+
             if self.line_instruction_color.rgba == self.line_color_active:
                 return
 
@@ -382,14 +387,21 @@ class CTextInput(ButtonBehavior, FloatLayout):
             anim.start(self._line)
 
         elif self.mode == "rectangle":
+            if not self.smooth_line_instruction_color:
+                return Clock.schedule_once(self.animate_line)
             # animate the color self.line_instruction_color
             self.smooth_line_instruction_color.rgba = self.line_color_active
         elif self.mode == "fill":
+            if not self.smooth_line_instruction_color:
+                return Clock.schedule_once(self.animate_line)
             # animate the color self.line_instruction_color
             self.smooth_line_instruction_color.rgba = self.line_color_active
 
     def restore_line(self, *args):
         if self.mode == "line":
+            if not self.line_instruction_color:
+                return
+
             # animate the color self.line_instruction_color
             end_color = self.line_color
 
@@ -402,8 +414,12 @@ class CTextInput(ButtonBehavior, FloatLayout):
             # Start the color animation
             color_animation.start(self.line_instruction_color)
         elif self.mode == "rectangle":
+            if not self.smooth_line_instruction_color:
+                return
             self.smooth_line_instruction_color.rgba = self.line_color
         elif self.mode == "fill":
+            if not self.smooth_line_instruction_color:
+                return
             # animate the color self.line_instruction_color
             self.smooth_line_instruction_color.rgba = self.line_color
 
