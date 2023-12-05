@@ -485,6 +485,9 @@ class CTextInput(ButtonBehavior, FloatLayout):
             "x": dp(12) / self.width,
         }
 
+        if self.focus:
+            self.on_focus_text_input()
+
     def do_rectangle_layout(self, *args):
         # check if there is a helper_text
         if self.helper_text:
@@ -543,7 +546,7 @@ class CTextInput(ButtonBehavior, FloatLayout):
                 "y": ((self.height - self._icon_left._height) / 2) / self.height,
             }
 
-        if self.text:
+        if self.text or self.focus:
             Clock.schedule_once(partial(self.move_hint_text_upwards, False))
 
     def create_initial_line(self, *args):
