@@ -1,3 +1,7 @@
+# Version: 0.1.40
+
+🐛 fix: Fixed `do_rectangle_layout` on CTextInput: checking `self.focus` and dispatching the on_focus event
+
 # Version: 0.1.39
 
 ✨ feat: Now `CTextInput` can start with focus=True
